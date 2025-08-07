@@ -1,0 +1,107 @@
+{
+    "latex-workshop.latex.tools": [
+        {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-pdf",
+                "-outdir=%OUTDIR%",
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "xelatex",
+            "command": "xelatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "pdflatex",
+            "command": "pdflatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOC%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "biber",
+            "command": "biber",
+            "args": [
+            "%DOCFILE%"
+            ],
+            "env": {}
+        },
+        {
+            "name": "makeglossaries",
+            "command": "makeglossaries",
+            "args": [
+                "%DOCFILE%"
+            ]
+        }
+        
+    ],
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "pdfLaTeX",
+            "tools": [
+                "pdflatex"
+            ]
+        },
+        {
+            "name": "latexmk 🔃",
+            "tools": [
+                "latexmk"
+            ]
+        },
+        {
+            "name": "xelatex",
+            "tools": [
+                "xelatex"
+            ]
+        },
+        {
+            "name": "pdflatex -> biber -> biber -> pdflatex",
+            "tools": [
+                "pdflatex",
+                "biber",
+                "biber",
+                "pdflatex"
+            ]
+        },
+        {
+            "name": "pdflatex -> biber -> biber -> makeglossaries -> pdflatex",
+            "tools": [
+                "pdflatex",
+                "biber",
+                "biber",
+                "makeglossaries",
+                "pdflatex"
+            ]
+        },        
+        {
+            "name": "xelatex -> biber -> biber -> xelatex",
+            "tools": [
+                "xelatex",
+                "biber",
+                "biber",
+                "xelatex"
+            ]
+        }
+    ],
+    "latex-workshop.latex.recipe.default": "pdflatex -> biber -> biber -> makeglossaries -> pdflatex",
+    "extensions.ignoreRecommendations": true,
+    "geminicodeassist.project": "",
+    "github.copilot.nextEditSuggestions.enabled": true
+}
