@@ -24,3 +24,5 @@ report/*.ist
 report/*.acn
 report/*.acr
 report/*.alg
+# Report-specific ignores
+report/figures/
