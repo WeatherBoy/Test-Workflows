@@ -1,5 +1,6 @@
 \section{Theory}\label{sec:theory}
 \subsection{Fast Healthcare Interoperability Resources (FHIR)}
+\subsubsection*{Health Level Seven and Background}
 FHIR is a standard for healthcare data, designed with the intent of enabling secure digital exchange.
 \\
 Unlike most other products and industries, \emph{standards} thrive on monopoly. Monoculturalism is a widely debated topic and probably most commonly agreed upon as unhealthy or counterproductive in the grand scheme of things. In that sense, we, as humans and a collective, benefit from the development of multiple languages and cultures. However, when it comes to standards, especially something as critical as healthcare data, we all benefit from speaking exactly one language\footnote{One might be tempted to consult the XKCD comic of appendix \autoref{sec:XKCD-standards}.}. A singular language, one standard, enables seamless transfer of information between different institutions and even across country borders. This, in turn, permits third-party developers to more readily design software applications harnessing the statistical advantages associated with large quantities of standardised data. Furthermore, if everybody utilised one standard, these technological advancements could also propagate across institutions and national borders. Taking into account this strange tolerance of monopolies, in order to understand why FHIR is \textbf{the} standard, one must necessarily also get acquainted with the organisation developing it, Health Level Seven (HL7).
@@ -8,4 +9,34 @@ FHIR was created and is currently maintained by the American non-profit organisa
 \begin{center}
     \emph{"A world where every individual has secure, timely, and appropriate access to accurate health information, empowering them, their care teams, and communities to make informed decisions anytime, anywhere."}
 \end{center}
-As a testament to their vision, in September $2012$ HL7 announced their intention to license their standards at no cost, and finally in April $2013$ they made all their primary standards, alongside other select products, of which FHIR is a part, licensable at no cost~\cite{HL7-no-cost}. Furthermore, as an American-founded and American-based organisation, HL7 is accredited by the American National Standards Body (NSB) of the International Organisation for Standardisation (ISO), namely the American National Standards Institute (ANSI). 	
+As a testament to their vision, in September $2012$ HL7 announced their intention to license their standards at no cost, and finally in April $2013$ they made all their primary standards, alongside other select products, of which FHIR is a part, licensable at no cost~\cite{HL7-no-cost}. Furthermore, as an American-founded and American-based organisation, HL7 is accredited by the American National Standards Body (NSB) of the International Organisation for Standardisation (ISO), namely the American National Standards Institute (ANSI).
+\\
+As for the FHIR standard itself, in January $2018$, Apple announced that their \emph{Health App} on their iPhones would support a FHIR-compliant medical record~\cite{Apple-Health}. In $2020$, the United States Centres for Medicare \& Medicaid Services (CMS) issued a rule that required the use of FHIR by a slew of CMS-regulated payers. These were, amongst others, Medicare Advantage organisations, U.S. state Medicaid programmes and qualified health plans in the Federally Facilitated Marketplace~\cite{CMS-9115-F}. Also in $2020$, the "Minist\'{e}rio da Sa\'{u}de do Brasil" (The Brazilian Ministry of Health) announced the inception of one of the world's largest platforms for national health interoperability. The "Rede Nacional de Dados em Sa\'{u}de" (National Health Data Network) or RNDS, as it is called, uses HL7's FHIR r4 (fourth release\footnote{As of writing in September of $2025$, FHIR is at release five.}) for all its information exchanges~\cite{RNDS}.
+
+\subsubsection*{FHIR technical details}
+The FHIR standard is incredibly thorough, as one might expect for a standard intended for global digital exchange of healthcare data. As such, this theory section will first touch briefly on the core building blocks, then showcase an example, and finally give a brief overview of the underlying technical structure\footnote{I struggle with using the term \emph{architecture} here, as I fear it would seem to reference their backend, when in reality I intend to refer to the structural hiearchy upon which the FHIR standard is defined.}.
+\\ 
+All exchangeable information in FHIR is referred to as a \emph{Resource}. These can most commonly be thought of as \texttt{classes} as per Java syntax. From the official FHIR overview~\cite{FHIR-overview}, it is stated that all \emph{resources} share the following three characteristics:
+\begin{itemize}
+	\item There exists a common definition or representation. This representation is often made up of datatypes (which we'll touch upon in further detail later on), which define some common reusable patterns.
+	\item There is a common set of metadata. Some examples of which are, but not limited to:
+	\begin{itemize}
+		\item A \texttt{versionID} which changes each time the content (datatypes and definition) of the \emph{resource} is changed.
+		\item  A \texttt{lastUpdated}, which is heavily linked to the aforementioned metadata. It tracks \textbf{when} there last was a change to the content of a \emph{resource}.
+		\item A \texttt{source} which stores a Uniform Resource Identifier (URI) of another \emph{resource} instance or a perhaps more general identifier, which is intended to help illuminate the source for the information contained within the current \emph{resource}. 
+	\end{itemize}
+	\item There is a "human-readable" part, which, albeit, is an incredibly vague characteristic. In the FHIR documentation, it is called a \texttt{Narrative}. Which itself takes the shape of a \emph{resource}\footnote{Which to me seems like a circular definition, but it might simply be because the \texttt{Narrative} \emph{resource} is exempt from these characteristics.}, and is defined by containing an XHTML datatype. If the \texttt{Narrative} \emph{resource} is flagged as 'non-empty', then its XHTML "SHALL reflect all content needed for a human to understand the essential clinical and business information for the \emph{resource}"~\cite{FHIR-Narrative}.
+\end{itemize}
+\noindent
+Now, instead of meticulously going through every single \emph{resource} definition in FHIR, because, as can be seen in \autoref{fig:FHIR-resource-index}, there are quite a lot, we'll briefly go over the \texttt{Patient} \emph{resource}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/theory/FHIR-resource-index.png}
+    \caption{FHIR \emph{resource} index}
+    \medskip
+    \small
+    \raggedright
+    FHIR's full overview of all their \emph{resources}. It can be found at ~\cite{FHIR-resource-index}.
+    \label{fig:FHIR-resource-index}
+\end{figure}
