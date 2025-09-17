@@ -2,6 +2,7 @@
 .vscode/
 **/__pycache__/
 venvTestWorkflows/
+infographic/data/images/
 
 # LaTeX-specific ignores (scoped to the report directory)
 report/**/*.aux
