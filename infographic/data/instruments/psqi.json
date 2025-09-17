@@ -1,0 +1,155 @@
+{
+    "instrument": "PSQI",
+    "version": "1.0",
+    "scales": {
+        "frequency": {
+            "id": "freq_0_3",
+            "range": [0, 3],
+            "labels": {
+                "0": "Not during the past month",
+                "1": "Less than once a week", 
+                "2": "Once or twice a week", 
+                "3": "Three or more times a week" 
+            }
+        },
+        "quality": {
+            "id": "quality_0_3",
+            "range": [0, 3],
+            "labels": {
+                "0": "Very good",
+                "1": "Fairly good",
+                "2": "Fairly bad",
+                "3": "Very bad"
+            }
+        }
+    },
+    "validation": {
+        "default_required": true,
+        "optional_items": ["q5j_other_text", "q5j_other_freq"] 
+    },
+    "items": [
+        { "id": "q1_bedtime", "text": "During the past month, when have you usually gone to bed at night?", "type": "time_range"},
+        { "id": "q2_sleep_latency_min", "text": "During the past month, how long (in minutes) has it usually taken you to fall asleep each night?", "type": "integer", "min": 0},
+        { "id": "q3_getup_time", "text": "During the past month, when have you usually gotten up in the morning?", "type": "time_range"},
+        { "id": "q4_sleep_hours", "text": "During the past month, how many hours of actual sleep did you get at night? (This may be different than the number of hours you spend in bed)", "type": "number_or_range"},
+
+        { "id": "q5a_cant_sleep_30min", "text": "Cannot get to sleep within 30 minutes", "type": "scale", "scale": "frequency"},
+        { "id": "q5b_wake_during_night", "text": "Wake in the middle of the night or early morning", "type": "scale", "scale": "frequency"},
+        { "id": "q5c_bathroom", "text": "Have to get up to use the bathroom", "type": "scale", "scale": "frequency"},
+        { "id": "q5d_breathe", "text": "Cannot breathe comfortably", "type": "scale", "scale": "frequency"},
+        { "id": "q5e_snore", "text": "Cough or snore loudly", "type": "scale", "scale": "frequency"},
+        { "id": "q5f_cold", "text": "Feel too cold", "type": "scale", "scale": "frequency"},
+        { "id": "q5g_hot", "text": "Feel too hot", "type": "scale", "scale": "frequency"},
+        { "id": "q5h_bad_dreams", "text": "Have bad dreams", "type": "scale", "scale": "frequency"},
+        { "id": "q5i_pain", "text": "Have pain", "type": "scale", "scale": "frequency"},
+        { "id": "q5j_other", "text": "Other reason(s), please describe:", "type": "text"},
+        { "id": "q5j_other_freq", "text": "How often did the other reason(s) disturb your sleep?", "type": "scale", "scale": "frequency" },
+
+        { "id": "q6_overall_quality", "text": "During the past month, how would you rate your sleep quality overall?", "type": "scale", "scale": "quality"},
+        { "id": "q7_sleep_meds", "text": "During the past month, how often have you taken medicine (prescribed or 'over the counter') to help you sleep?", "type": "scale", "scale": "frequency"},
+        { "id": "q8_trouble_staying_awake", "text": "During the past month, how often have you had trouble staying awake while driving, eating meals or engaging in social activity?", "type": "scale", "scale": "frequency"},
+        { "id": "q9_low_enthusiasm", "text": "During the past month, how much of a problem has it been for you to keep up enough enthusiasm to get things done?", "type": "scale", "scale": "frequency"}
+    ],
+
+    "derived_fields": {
+        "time_in_bed_hours": { "formula": "hours_between(q1_bedtime, q3_getup_time)", "wrap_midnight": true, "use_range_midpoint": true },
+        "sleep_efficiency_pct": { "formula": "100 * to_hours(q4_sleep_hours) / time_in_bed_hours" }
+    },
+
+    "components": {
+        "C1_subjective_quality": {
+            "label": "Subjective sleep quality",
+            "score": { "from_item": "q6_overall_quality" }                  
+        },
+    "C2_sleep_latency": {
+        "label": "Sleep latency",
+        "score": {
+            "sum_of": [
+                { "bucket": 
+                    { "source": "q2_sleep_latency_min", "bins": [[0,15,0],[16,30,1],[31,60,2],[61,9999,3]] } 
+                },
+                { "from_item": "q5a_cant_sleep_30min" }
+            ],
+            "to_component": {
+                "bins": [[0,0,0],[1,2,1],[3,4,2],[5,6,3]] 
+            }  
+        }
+    },
+    "C3_sleep_duration": {
+        "label": "Sleep duration",
+        "score": {
+            "bucket": { "source": "q4_sleep_hours", "bins": [[7,9999,0],[6,7,1],[5,6,2],[0,5,3]] }
+        }
+    },
+    "C4_sleep_efficiency": {
+        "label": "Habitual sleep efficiency",
+        "score": {
+            "bucket": { "source": "sleep_efficiency_pct", "bins": [[85,999,0],[75,85,1],[65,75,2],[0,65,3]] }
+        }
+    },
+    "C5_sleep_disturbances": {
+        "label": "Sleep disturbances",
+        "score": {
+            "sum_items": [
+                "q5b_wake_during_night",
+                "q5c_bathroom",
+                "q5d_breathe",
+                "q5e_snore",
+                "q5f_cold",
+                "q5g_hot",
+                "q5h_bad_dreams",
+                "q5i_pain",
+                "q5j_other_freq"
+            ],
+            "to_component": { "bins": [[0,0,0],[1,9,1],[10,18,2],[19,27,3]] }
+        }
+    },
+    "C6_sleep_meds": {
+        "label": "Use of sleep medication",
+        "score": { "from_item": "q7_sleep_meds" }
+    },
+    "C7_daytime_dysfunction": {
+        "label": "Daytime dysfunction",
+        "score": {
+            "sum_items": ["q8_trouble_staying_awake","q9_low_enthusiasm"],
+            "to_component": { "bins": [[0,0,0],[1,2,1],[3,4,2],[5,6,3]] }
+        }
+    }
+    },
+
+    "scoring": {
+        "global_psqi": {
+            "label": "Global PSQI",
+            "sum_components": [
+                "C1_subjective_quality",
+                "C2_sleep_latency",
+                "C3_sleep_duration",
+                "C4_sleep_efficiency",
+                "C5_sleep_disturbances",
+                "C6_sleep_meds",
+                "C7_daytime_dysfunction"
+            ],
+            "range": [0, 21],
+            "interpretation": {
+                "cutoff_poor_sleep": 5,
+                "bands": [
+                    { "label": "Good", "min": 0, "max": 4 },
+                    { "label": "Poor", "min": 5, "max": 10 },
+                    { "label": "Very poor", "min": 11, "max": 21 }
+                ]
+            }
+        }
+    },
+
+    "display": {
+        "default_order": [
+            "C1_subjective_quality",
+            "C2_sleep_latency",
+            "C3_sleep_duration",
+            "C4_sleep_efficiency",
+            "C5_sleep_disturbances",
+            "C6_sleep_meds",
+            "C7_daytime_dysfunction"
+        ]
+    }
+}
