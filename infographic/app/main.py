@@ -32,21 +32,21 @@ data["B1"] = dict(
     healthy_diet_days=6,
     alcohol_yes=True,
     alcohol_often="Occasionally",
-    alcohol_units_per_week="8–14",
+    alcohol_units_per_week="8-14",
     smoking="No",
     first_cig_30min="No",
     oral_med="No",
     insulin="Yes",
     other_injections="No",
-    glucose_checks_per_week="10–20",
+    glucose_checks_per_week="10-20",
     hypo_any_month="Yes",
-    hypos_past_month="10–12",
+    hypos_past_month="10-12",
     needed_assistance_any="No",
     needed_assistance_count=0,
     checkups_past_year=2,
 )
 
-# B2 - Emotional distress (assume 0–4 scale; numbers as given)
+# B2 - Emotional distress (assume 0-4 scale; numbers as given)
 data["B2"] = {
     "Feeling depressed thinking about diabetes": 0,
     "Diabetes taking too much energy": 1,
@@ -61,7 +61,7 @@ data["C"] = dict(
     primary_area="B", secondary_area="A", importance_0_4=4, confidence_0_4=2
 )
 
-# D1 - Food behavior (assume 0–4, numbers as given)
+# D1 - Food behavior (assume 0-4, numbers as given)
 data["D1"] = {
     "No time to make healthy meals": 1,
     "Eating outside home is difficult": 1,
@@ -74,18 +74,18 @@ data["D1"] = {
     "Feel hopeless after many tries": 1,
 }
 
-# D4 - DMAS (adherence) – encode as booleans/text; we'll show a compact table
+# D4 - DMAS (adherence) - encode as booleans/text; we'll show a compact table
 data["D4"] = [
     ("Forget medications?", "No"),
     ("Missed for other reasons in last 2 weeks?", "No"),
     ("Forget to bring meds when traveling?", "No"),
     ("Difficulty remembering all meds?", "Never / very rarely"),
-    ("Number of prescribed med types (regular)", "2–4"),
+    ("Number of prescribed med types (regular)", "2-4"),
     ("Skip buying meds due to cost?", "No"),
     ("Who ensures you take meds?", "Self"),
 ]
 
-# WHO-5 (0–5 usually; we keep numbers given)
+# WHO-5 (0-5 usually; we keep numbers given)
 data["WHO5"] = {
     "Cheerful / in good spirits": 2,
     "Calm and relaxed": 2,
@@ -94,13 +94,13 @@ data["WHO5"] = {
     "Daily life filled with interest": 2,
 }
 
-# PSQI – we’ll present key sleep metrics and a frequency bar for symptoms (0–3 scale assumed)
+# PSQI - we’ll present key sleep metrics and a frequency bar for symptoms (0-3 scale assumed)
 data["PSQI"] = dict(
     schedule=dict(
-        bedtime="23:00–23:59",
+        bedtime="23:00-23:59",
         latency_min=20,
-        getup="07:45–08:00",
-        hours_sleep="7–8",
+        getup="07:45-08:00",
+        hours_sleep="7-8",
     ),
     symptoms={
         "Cant sleep within 30 min": 1,
@@ -125,7 +125,7 @@ data["PSQI"] = dict(
     },
 )
 
-# HADS – two subscales; numbers as given
+# HADS - two subscales; numbers as given
 data["HADS_A"] = {  # Anxiety items (7)
     "Tense / wound up": 3,
     "Frightened feeling of something happening": 3,
@@ -166,7 +166,7 @@ radar_labels = [
 ]
 
 
-# Normalize each domain to 0–10 for a gestalt
+# Normalize each domain to 0-10 for a gestalt
 def avg(values):
     return sum(values) / len(values) if values else 0.0
 
@@ -181,7 +181,7 @@ adherence_inverse = 10.0 - 0.0  # placeholder; no clear issues from D4
 
 who5_avg_0_5 = avg(list(data["WHO5"].values()))
 
-# Scale to 0–10
+# Scale to 0-10
 food_0_10 = food_avg_0_4 * (10 / 4)
 distress_0_10 = distress_avg_0_4 * (10 / 4)
 sleep_0_10 = sleep_avg_0_3 * (10 / 3)
@@ -206,7 +206,7 @@ ax.set_ylim(0, 10)
 ax.plot(angles, values, marker="o")
 ax.fill(angles, values, alpha=0.25)
 
-radar_path = Path("/mnt/data/radar_overview.png")
+radar_path = "data\\images\\radar_overview.png"
 fig.tight_layout()
 fig.savefig(radar_path, dpi=150)
 plt.close(fig)
@@ -215,14 +215,14 @@ plt.close(fig)
 # --------------------------
 # 3) Bokeh charts: multiple bar charts
 # --------------------------
-def bokeh_bar(title, mapping, x_range=None, y_max=4, tooltips=None):
+def bokeh_bar(title, mapping, x_range=range | None, y_max=4, tooltips=None):
     labels = list(mapping.keys())
     values = list(mapping.values())
 
     if x_range is None:
-        x_range = labels
+        x_range = range(len(labels))
     src = ColumnDataSource(dict(label=labels, value=values))
-    p = figure(title=title, x_range=x_range, height=350, toolbar_location=None)
+    p = figure(title=title, height=350, toolbar_location=None)
     p.vbar(x="label", top="value", width=0.8, source=src)
     p.y_range = Range1d(0, y_max)
     p.xgrid.visible = False
@@ -233,26 +233,26 @@ def bokeh_bar(title, mapping, x_range=None, y_max=4, tooltips=None):
     return p
 
 
-# Emotional distress (0–4)
-p_b2 = bokeh_bar("Emotional distress (0–4)", data["B2"], y_max=4)
+# Emotional distress (0-4)
+p_b2 = bokeh_bar("Emotional distress (0-4)", data["B2"], y_max=4)
 
-# Food behavior (0–4)
-p_d1 = bokeh_bar("Food behavior (0–4)", data["D1"], y_max=4)
+# Food behavior (0-4)
+p_d1 = bokeh_bar("Food behavior (0-4)", data["D1"], y_max=4)
 
-# WHO-5 (0–5)
-p_who5 = bokeh_bar("WHO-5 wellbeing (0–5)", data["WHO5"], y_max=5)
+# WHO-5 (0-5)
+p_who5 = bokeh_bar("WHO-5 wellbeing (0-5)", data["WHO5"], y_max=5)
 
-# PAID (0–4)
-p_paid = bokeh_bar("PAID – problem areas (0–4)", data["PAID"], y_max=4)
+# PAID (0-4)
+p_paid = bokeh_bar("PAID - problem areas (0-4)", data["PAID"], y_max=4)
 
-# PSQI symptoms (0–3)
+# PSQI symptoms (0-3)
 p_psqi = bokeh_bar(
-    "PSQI – sleep symptoms frequency (0–3)", data["PSQI"]["symptoms"], y_max=3
+    "PSQI - sleep symptoms frequency (0-3)", data["PSQI"]["symptoms"], y_max=3
 )
 
-# HADS subscales (0–3 per item typically; we just display the raw item scores)
-p_hads_a = bokeh_bar("HADS – Anxiety items", data["HADS_A"], y_max=3)
-p_hads_d = bokeh_bar("HADS – Depression items", data["HADS_D"], y_max=3)
+# HADS subscales (0-3 per item typically; we just display the raw item scores)
+p_hads_a = bokeh_bar("HADS - Anxiety items", data["HADS_A"], y_max=3)
+p_hads_d = bokeh_bar("HADS - Depression items", data["HADS_D"], y_max=3)
 
 # Dump components
 script_b2, div_b2 = components(p_b2)
@@ -309,7 +309,7 @@ html = dedent(f"""
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Patient Questionnaire – Prototype</title>
+  <title>Patient Questionnaire - Prototype</title>
   {bokeh_resources}
   <style>
     body {{
@@ -339,7 +339,7 @@ html = dedent(f"""
 </head>
 <body>
   <div class="wrap">
-    <h1>Patient questionnaire – single-visit overview</h1>
+    <h1>Patient questionnaire - single-visit overview</h1>
     <div class="muted">Prototype — numbers are displayed on their native scales from each instrument.</div>
 
     <div class="grid g-2" style="margin-top:16px;">
@@ -350,7 +350,7 @@ html = dedent(f"""
       <div class="card">
         <h2>Overview (radar)</h2>
         <img class="radar" src="radar_overview.png" alt="Radar overview">
-        <div class="muted">Scaled 0–10 across domains for quick orientation.</div>
+        <div class="muted">Scaled 0-10 across domains for quick orientation.</div>
       </div>
     </div>
 
@@ -394,7 +394,7 @@ html = dedent(f"""
 """)
 
 # Save HTML and copy radar image next to it
-out_file = Path("/mnt/data/patient_questionnaire_dashboard.html")
+out_file = Path("data/dashboards/patient_questionnaire_dashboard.html")
 out_file.write_text(html, encoding="utf-8")
 
 # Save the radar image next to HTML (already saved)
