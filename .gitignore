@@ -1,4 +1,6 @@
+# Python-specific ignores
 .vscode/
+venvTestWorkflows/
 
 # LaTeX-specific ignores (scoped to the report directory)
 report/**/*.aux
