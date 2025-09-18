@@ -285,3 +285,35 @@ def psqi_c7_medication(psqi_answers: Dict[str, Any]) -> int:
     q7 = valid_and_digit(q7, 0, 3, q7_key)
 
     return q7
+
+
+def hads_anxiety(hads_answers: Dict[str, Any]) -> int:
+    """
+    Compute the HADS Anxiety score.
+    Based on the HADS scoring guidelines:
+    - HADS-A consists of 7 questions (A1, A2, A3, A4, A5, A6, A7).
+    Each question is scored from 0 to 3.
+        0: Not at all
+        1: Some of the time
+        2: Most of the time
+        3: Yes, all of the time
+    For a total score ranging from 0 to 21. A higher score indicates greater anxiety.
+    NOTE: Question A4 is reverse scored.
+
+    Raises ValueError if any of the HADS-A questions are missing or invalid.
+
+    :param hads_answers: Dictionary of HADS answers.
+
+    :return: Integer score for HADS Anxiety.
+    """
+    anxiety_questions = ["A1", "A2", "A3", "A4", "A5", "A6", "A7"]
+    total_score = 0
+    for q in anxiety_questions:
+        val = hads_answers.get(q)
+        val = valid_and_digit(val, 0, 3, q)
+        if q == "A4":
+            # Reverse score A4
+            val = 3 - val
+        total_score += val
+
+    return total_score
