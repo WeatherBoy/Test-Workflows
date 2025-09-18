@@ -60,14 +60,14 @@ def psqi_c2_disturbance(psqi_answers: Dict[str, Any]) -> int:
     :return: Integer score for C2 sleep disturbance.
     """
     disturbance_questions = [
-        "q5b",
-        "q5c",
-        "q5d",
-        "q5e",
-        "q5f",
-        "q5g",
-        "q5h",
-        "q5i",
+        "q5b_wake_during_night",
+        "q5c_bathroom",
+        "q5d_cant_breathe",
+        "q5e_snore",
+        "q5f_cold",
+        "q5g_hot",
+        "q5h_bad_dreams",
+        "q5i_pain",
     ]
     total_score = 0
     for q in disturbance_questions:
@@ -112,7 +112,8 @@ def psqi_c3_latency(psqi_answers: Dict[str, Any]) -> int:
     q2 = psqi_answers.get(q2_key)
     q2 = split_the_difference(q2, q2_key)
 
-    q5a = psqi_answers.get("q5a")
+    q5a_key = "q5a_cant_sleep_30min"
+    q5a = psqi_answers.get(q5a_key)
     if isinstance(q5a, str) and q5a.isdigit():
         q5a = int(q5a)
     if q5a is None or not isinstance(q5a, int) or q5a < 0 or q5a > 3:
@@ -164,13 +165,15 @@ def psqi_c4_day_dysfunction(psqi_answers: Dict[str, Any]) -> int:
     :return: Integer score for C4 daytime dysfunction.
     """
 
-    q8 = psqi_answers.get("q8")
+    q8_key = "q8_trouble_staying_awake"
+    q8 = psqi_answers.get(q8_key)
     if isinstance(q8, str) and q8.isdigit():
         q8 = int(q8)
     if q8 is None or not isinstance(q8, int) or q8 < 0 or q8 > 3:
         raise ValueError(f"Invalid q8 value: {q8!r}")
 
-    q9 = psqi_answers.get("q9")
+    q9_key = "q9_low_enthusiasm"
+    q9 = psqi_answers.get(q9_key)
     if isinstance(q9, str) and q9.isdigit():
         q9 = int(q9)
     if q9 is None or not isinstance(q9, int) or q9 < 0 or q9 > 3:
