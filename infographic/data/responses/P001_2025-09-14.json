@@ -91,16 +91,14 @@
             "q8_trouble_staying_awake": 0,
             "q9_low_enthusiasm": 0
         },
-        "HADS_A": {
+        "HADS": {
             "A1": 3,
             "A2": { "answer": "3", "comment": "very low though"},
             "A3": 3,
             "A4": 1,
             "A5": 3,
             "A6": { "answer": "3", "comment": "NOT at all"},
-            "A7": { "answer": "3", "comment": "NOT at all"}
-        },
-        "HADS_D": {
+            "A7": { "answer": "3", "comment": "NOT at all"},
             "D1": 0,
             "D2": 0,
             "D3": 0,
