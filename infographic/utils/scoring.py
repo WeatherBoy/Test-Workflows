@@ -1,6 +1,10 @@
 from typing import Any, Dict
 
-from string_handling import split_the_difference, valid_and_digit
+from string_handling import (
+    split_the_difference,
+    split_the_difference_datetime,
+    valid_and_digit,
+)
 
 
 def psqi_c1_duration(psqi_answers: Dict[str, Any]) -> int:
@@ -179,3 +183,55 @@ def psqi_c4_day_dysfunction(psqi_answers: Dict[str, Any]) -> int:
         return 3
     else:
         raise ValueError(f"Invalid total day dysfunction score: {total_score!r}")
+
+
+def psqi_c5_sleep_efficiency(psqi_answers: Dict[str, Any]) -> int:
+    """
+    Compute the sleep efficiency score (C5) for the PSQI.
+    Based on the PSQI scoring guidelines:
+    - q1_bedtime: reported usual bedtime (e.g., "23:00-23:30")
+    - q3_wake_time: reported usual wake time (e.g., "07:00-07:30")
+    - q4_sleep_hours: reported hours of sleep (can be a number or a range like "6-7")
+    Returns an integer score from 0 to 3.
+        0: >=85%
+        1: 75-84%
+        2: 65-74%
+        3: <65%
+
+    Raises ValueError if any of q1, q3, or q4 are missing or invalid.
+
+    :param psqi_answers: Dictionary of PSQI answers.
+
+    :return: Integer score for C5 sleep efficiency.
+    """
+
+    q1_key = "q1_bedtime"
+    q1 = psqi_answers.get(q1_key)
+    bedtime = split_the_difference_datetime(q1, q1_key)
+
+    q3_key = "q3_wake_time"
+    q3 = psqi_answers.get(q3_key)
+    waketime = split_the_difference_datetime(q3, q3_key)
+
+    # Now we have the bed time and wake time as datetime objects we must find the absolute difference in hours
+    total_time_in_bed_hours = (waketime - bedtime).total_seconds() / 3600.0
+    assert 0 < total_time_in_bed_hours <= 24, (
+        f"Invalid time in bed: {total_time_in_bed_hours!r}"
+    )
+
+    q4_key = "q4_sleep_hours"
+    q4 = psqi_answers.get(q4_key)
+    hours_slept = split_the_difference(q4, q4_key)
+
+    sleep_efficiency = (hours_slept / total_time_in_bed_hours) * 100.0
+
+    if sleep_efficiency >= 85.0:
+        return 0
+    elif 75.0 <= sleep_efficiency < 85.0:
+        return 1
+    elif 65.0 <= sleep_efficiency < 75.0:
+        return 2
+    elif sleep_efficiency < 65.0:
+        return 3
+    else:
+        raise ValueError(f"Invalid sleep efficiency value: {sleep_efficiency!r}")
