@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from string_handling import split_the_difference
+from string_handling import split_the_difference, valid_and_digit
 
 
 def psqi_c1_duration(psqi_answers: Dict[str, Any]) -> int:
@@ -72,10 +72,7 @@ def psqi_c2_disturbance(psqi_answers: Dict[str, Any]) -> int:
     total_score = 0
     for q in disturbance_questions:
         val = psqi_answers.get(q)
-        if isinstance(val, str) and val.isdigit():
-            val = int(val)
-        if val is None or not isinstance(val, int) or val < 0 or val > 3:
-            raise ValueError(f"Invalid {q} value: {val!r}")
+        val = valid_and_digit(val, 0, 3, q)
         total_score += val
 
     if total_score == 0:
@@ -114,10 +111,7 @@ def psqi_c3_latency(psqi_answers: Dict[str, Any]) -> int:
 
     q5a_key = "q5a_cant_sleep_30min"
     q5a = psqi_answers.get(q5a_key)
-    if isinstance(q5a, str) and q5a.isdigit():
-        q5a = int(q5a)
-    if q5a is None or not isinstance(q5a, int) or q5a < 0 or q5a > 3:
-        raise ValueError(f"Invalid q5a value: {q5a!r}")
+    q5a = valid_and_digit(q5a, 0, 3, q5a_key)
 
     q2new = None
     if 0 <= q2 <= 15:
@@ -167,17 +161,11 @@ def psqi_c4_day_dysfunction(psqi_answers: Dict[str, Any]) -> int:
 
     q8_key = "q8_trouble_staying_awake"
     q8 = psqi_answers.get(q8_key)
-    if isinstance(q8, str) and q8.isdigit():
-        q8 = int(q8)
-    if q8 is None or not isinstance(q8, int) or q8 < 0 or q8 > 3:
-        raise ValueError(f"Invalid q8 value: {q8!r}")
+    q8 = valid_and_digit(q8, 0, 3, q8_key)
 
     q9_key = "q9_low_enthusiasm"
     q9 = psqi_answers.get(q9_key)
-    if isinstance(q9, str) and q9.isdigit():
-        q9 = int(q9)
-    if q9 is None or not isinstance(q9, int) or q9 < 0 or q9 > 3:
-        raise ValueError(f"Invalid q9 value: {q9!r}")
+    q9 = valid_and_digit(q9, 0, 3, q9_key)
 
     total_score = q8 + q9
 
