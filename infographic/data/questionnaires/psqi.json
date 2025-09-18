@@ -24,8 +24,7 @@
         }
     },
     "validation": {
-        "default_required": true,
-        "optional_items": ["q5j_other_text", "q5j_other_freq"] 
+        "default_required": true
     },
     "items": [
         { "id": "q1_bedtime", "text": "During the past month, when have you usually gone to bed at night?", "type": "time_range"},
@@ -36,14 +35,12 @@
         { "id": "q5a_cant_sleep_30min", "text": "Cannot get to sleep within 30 minutes", "type": "scale", "scale": "frequency"},
         { "id": "q5b_wake_during_night", "text": "Wake in the middle of the night or early morning", "type": "scale", "scale": "frequency"},
         { "id": "q5c_bathroom", "text": "Have to get up to use the bathroom", "type": "scale", "scale": "frequency"},
-        { "id": "q5d_breathe", "text": "Cannot breathe comfortably", "type": "scale", "scale": "frequency"},
+        { "id": "q5d_cant_breathe", "text": "Cannot breathe comfortably", "type": "scale", "scale": "frequency"},
         { "id": "q5e_snore", "text": "Cough or snore loudly", "type": "scale", "scale": "frequency"},
         { "id": "q5f_cold", "text": "Feel too cold", "type": "scale", "scale": "frequency"},
         { "id": "q5g_hot", "text": "Feel too hot", "type": "scale", "scale": "frequency"},
         { "id": "q5h_bad_dreams", "text": "Have bad dreams", "type": "scale", "scale": "frequency"},
         { "id": "q5i_pain", "text": "Have pain", "type": "scale", "scale": "frequency"},
-        { "id": "q5j_other", "text": "Other reason(s), please describe:", "type": "text"},
-        { "id": "q5j_other_freq", "text": "How often did the other reason(s) disturb your sleep?", "type": "scale", "scale": "frequency" },
 
         { "id": "q6_overall_quality", "text": "During the past month, how would you rate your sleep quality overall?", "type": "scale", "scale": "quality"},
         { "id": "q7_sleep_meds", "text": "During the past month, how often have you taken medicine (prescribed or 'over the counter') to help you sleep?", "type": "scale", "scale": "frequency"},
