@@ -152,3 +152,51 @@ def psqi_c3_latency(psqi_answers: Dict[str, Any]) -> int:
         return 3
     else:
         raise ValueError(f"Invalid q2_sleep_latency_min or q5a values: {q2!r}, {q5a!r}")
+
+
+def psqi_c4_day_dysfunction(psqi_answers: Dict[str, Any]) -> int:
+    """
+    Compute the daytime dysfunction score (C4) for the PSQI.
+    Based on the PSQI scoring guidelines:
+    - q8: frequency of having trouble staying awake during the day:
+        0 = Not during the past month,
+        1 = Less than once a week,
+        2 = Once or twice a week,
+        3 = Three or more times a week
+    - q9: quantity of trouble keeping up enthusiasm to get things done:
+        0 = No problem at all,
+        1 = Only a very slight problem,
+        2 = Somewhat of a problem,
+        3 = A very big problem
+    Returns an integer score from 0 to 3. Based on q8 and q9 combined.
+    Raises ValueError if q8 or q9 are missing or invalid.
+
+    :param psqi_answers: Dictionary of PSQI answers.
+
+    :return: Integer score for C4 daytime dysfunction.
+    """
+
+    q8 = psqi_answers.get("q8")
+    if isinstance(q8, str) and q8.isdigit():
+        q8 = int(q8)
+    if q8 is None or not isinstance(q8, int) or q8 < 0 or q8 > 3:
+        raise ValueError(f"Invalid q8 value: {q8!r}")
+
+    q9 = psqi_answers.get("q9")
+    if isinstance(q9, str) and q9.isdigit():
+        q9 = int(q9)
+    if q9 is None or not isinstance(q9, int) or q9 < 0 or q9 > 3:
+        raise ValueError(f"Invalid q9 value: {q9!r}")
+
+    total_score = q8 + q9
+
+    if total_score == 0:
+        return 0
+    elif 1 <= total_score <= 2:
+        return 1
+    elif 3 <= total_score <= 4:
+        return 2
+    elif 5 <= total_score <= 6:
+        return 3
+    else:
+        raise ValueError(f"Invalid total day dysfunction score: {total_score!r}")
