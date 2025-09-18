@@ -235,3 +235,28 @@ def psqi_c5_sleep_efficiency(psqi_answers: Dict[str, Any]) -> int:
         return 3
     else:
         raise ValueError(f"Invalid sleep efficiency value: {sleep_efficiency!r}")
+
+
+def psqi_c6_overall_sleep_quality(psqi_answers: Dict[str, Any]) -> int:
+    """
+    Compute the overall sleep quality score (C6) for the PSQI.
+    Based on the PSQI scoring guidelines:
+    - q6: self-rated overall sleep quality:
+        0 = Very good,
+        1 = Fairly good,
+        2 = Fairly bad,
+        3 = Very bad
+    Returns an integer score from 0 to 3.
+
+    Raises ValueError if q6 is missing or invalid.
+
+    :param psqi_answers: Dictionary of PSQI answers.
+
+    :return: Integer score for C6 overall sleep quality.
+    """
+
+    q6_key = "q6_overall_quality"
+    q6 = psqi_answers.get(q6_key)
+    q6 = valid_and_digit(q6, 0, 3, q6_key)
+
+    return q6
