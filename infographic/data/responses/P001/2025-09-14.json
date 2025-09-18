@@ -75,7 +75,7 @@
         "PSQI": {
             "q1_bedtime": "23:00-23:59",
             "q2_sleep_latency_min": 20,
-            "q3_getup_time": "07:45-08:00",
+            "q3_wake_time": "07:45-08:00",
             "q4_sleep_hours": "7-8",
             "q5a_cant_sleep_30min": 1,
             "q5b_wake_during_night": 2,
