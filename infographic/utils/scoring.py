@@ -105,11 +105,7 @@ def psqi_c3_latency(psqi_answers: Dict[str, Any]) -> int:
       1 = Less than once a week,
       2 = Once or twice a week,
       3 = Three or more times a week
-    Returns an integer score from 0 to 3.
-    0: <15 min and q5a=0
-    1: 16-30 min or q5a=1
-    2: 31-60 min or q5a=2
-    3: >60 min or q5a=3
+    Returns an integer score from 0 to 3. Based on q2 and q5a combined.
 
     Raises ValueError if q2_sleep_latency_min or q5a are missing or invalid.
 
