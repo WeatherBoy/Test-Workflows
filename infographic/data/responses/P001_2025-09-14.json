@@ -1,0 +1,121 @@
+{
+    "patient_id": "P-001",
+    "visit_date": "2025-09-14",
+    "questionnaires": {
+        "B1_Lifestyle": {
+            "weight_kg": 90,
+            "exercise_days_last_week": 4,
+            "healthy_diet_days_last_week": 6,
+            "alcohol": {
+                "uses": true,
+                "frequency": "Occasionally",
+                "units_per_week": "8-14"
+            },
+            "smoking": {
+                "smokes": "No",
+                "frequency": "Null",
+                "quantity_per_day": "Null",
+                "first_cig_within_30_min": "Null"
+            },
+            "medical_therapy": {
+                "oral_meds": "No",
+                "insulin": "Yes",
+                "other_injections": { "answer": "No", "comment": "two different types of insulin"}
+            },
+            "glucose_checks_per_week": "10-20",
+            "low_glucose_past_month": {
+                "any": "Yes",
+                "episodes": "10-12",
+                "assistance_any": "No",
+                "assistance_count": 0
+            },
+            "checkups_past_year": { "answer": "2", "comment": "approx. every 6 months"}
+        },
+        "B2_EmotionalDistress": {
+            "B2-1": 0,
+            "B2-2": 1,
+            "B2-3": 0,
+            "B2-4": { "answer": "0", "comment": "Being aware of the condition but not overly concerned"},
+            "B2-5": 0,
+            "B2-6": { "answer": "0", "comment": "Feeling very lucky that it can be 'fixed', not burned out, but aware"}
+        },
+        "C_AreasOfConcern": {
+            "primary": "B",
+            "secondary": { "answer": "A", "comment": "When getting it, was very confused as to what could be eaten on a regular basis"},
+            "importance_0_4": { "answer": "4", "comment": "anything else would be unserious"},
+            "confidence_0_4": 2
+        },
+        "D1_FoodBehavior": {
+            "D1-1": 1,
+            "D1-2": 1,
+            "D1-3": 0,
+            "D1-4": 0,
+            "D1-5": 0,
+            "D1-6": { "answer": "1", "comment": "a tiny '1'"},
+            "D1-7": 0,
+            "D1-8": { "answer": "0", "comment": "doesn't follow an eating plan"},
+            "D1-9": { "answer": "0", "comment": "Would maybe like to loose a few kilos"}
+        },
+        "D4_DMAS": {
+            "D4-1": { "answer": "No", "comment": "On very rare occasions"},
+            "D4-2": "No",
+            "D4-3": { "answer": "No", "comment": "But then it is possible to buy something from an apothecary"},
+            "D4-4": { "answer": "Never", "comment": "or VERY rarely"},
+            "D4-5": { "answer": "2-4", "comment": "two types of insulin and a daily cholesterol medication"},
+            "D4-6": { "answer": "No", "comment": "The goverment covers (a lot of) it"},
+            "D4-7": "Myself"
+        },
+        "WHO5": {
+            "Q1": 2,
+            "Q2": 2,
+            "Q3": 2,
+            "Q4": 3,
+            "Q5": 2
+        },
+        "PSQI": {
+            "q1_bedtime": "23:00-23:59",
+            "q2_sleep_latency_min": 20,
+            "q3_getup_time": "07:45-08:00",
+            "q4_sleep_hours": "7-8",
+            "q5a_cant_sleep_30min": 1,
+            "q5b_wake_during_night": 2,
+            "q5c_bathroom": 3,
+            "q5d_cant_breathe": 0,
+            "q5e_snore": 3,
+            "q5f_cold": 0,
+            "q5g_hot": 1,
+            "q5h_bad_dreams": { "answer": "1", "comment": "If falling asleep with a high blood-glucose level"},
+            "q5i_pain": 0,
+            "q6_overall_quality": 1,
+            "q7_sleep_meds": 0,
+            "q8_trouble_staying_awake": 0,
+            "q9_low_enthusiasm": 0
+        },
+        "HADS_A": {
+            "A1": 3,
+            "A2": { "answer": "3", "comment": "very low though"},
+            "A3": 3,
+            "A4": 1,
+            "A5": 3,
+            "A6": { "answer": "3", "comment": "NOT at all"},
+            "A7": { "answer": "3", "comment": "NOT at all"}
+        },
+        "HADS_D": {
+            "D1": 0,
+            "D2": 0,
+            "D3": 0,
+            "D4": 3,
+            "D5": { "answer": "3", "comment": "NOT at all"},
+            "D6": 0,
+            "D7": 0
+        },
+        "PAID": {
+            "P1": 1,
+            "P2": 1,
+            "P3": 1,
+            "P4": 0,
+            "P5": 0,
+            "P6": 1
+        }
+    }
+}
