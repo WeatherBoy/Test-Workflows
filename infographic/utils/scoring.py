@@ -317,3 +317,35 @@ def hads_anxiety(hads_answers: Dict[str, Any]) -> int:
         total_score += val
 
     return total_score
+
+
+def hads_depression(hads_answers: Dict[str, Any]) -> int:
+    """
+    Compute the HADS Depression score.
+    Based on the HADS scoring guidelines:
+    - HADS-D consists of 7 questions (D1, D2, D3, D4, D5, D6, D7).
+    Each question is scored from 0 to 3.
+        0: Not at all
+        1: Some of the time
+        2: Most of the time
+        3: Yes, all of the time
+    For a total score ranging from 0 to 21. A higher score indicates greater depressive tendencies.
+    NOTE: (The entire HADS-D is reversed.. almost) Questions D1, D2, D3, D6, D7 are reverse scored.
+
+    Raises ValueError if any of the HADS-D questions are missing or invalid.
+
+    :param hads_answers: Dictionary of HADS answers.
+
+    :return: Integer score for HADS Depression.
+    """
+    depression_questions = ["D1", "D2", "D3", "D4", "D5", "D6", "D7"]
+    total_score = 0
+    for q in depression_questions:
+        val = hads_answers.get(q)
+        val = valid_and_digit(val, 0, 3, q)
+        if q in ["D1", "D2", "D3", "D6", "D7"]:
+            # scored reverse
+            val = 3 - val
+        total_score += val
+
+    return total_score
