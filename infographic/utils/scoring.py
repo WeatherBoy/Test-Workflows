@@ -1,5 +1,7 @@
 from typing import Any, Dict
 
+from string_handling import split_the_difference
+
 
 def psqi_c1_duration(psqi_answers: Dict[str, Any]) -> int:
     """
@@ -18,16 +20,9 @@ def psqi_c1_duration(psqi_answers: Dict[str, Any]) -> int:
 
     :return: Integer score for C1 duration of sleep.
     """
-    q4 = psqi_answers.get("q4_sleep_hours")
-    if isinstance(q4, (int, float)):
-        q4 = float(q4)
-    elif isinstance(q4, str) and "-" in q4:
-        parts = q4.split("-")
-        low = float(parts[0])
-        high = float(parts[1])
-        q4 = (low + high) / 2.0  # <-- split the difference
-    else:
-        raise ValueError(f"Invalid q4_sleep_hours value: {q4!r}")
+    q4_key = "q4_sleep_hours"
+    q4 = psqi_answers.get(q4_key)
+    q4 = split_the_difference(q4, q4_key)
 
     if q4 >= 7:
         return 0
@@ -113,16 +108,9 @@ def psqi_c3_latency(psqi_answers: Dict[str, Any]) -> int:
 
     :return: Integer score for C3 sleep latency.
     """
-    q2 = psqi_answers.get("q2_sleep_latency_min")
-    if isinstance(q2, (int, float)):
-        q2 = float(q2)
-    elif isinstance(q2, str) and "-" in q2:
-        parts = q2.split("-")
-        low = float(parts[0])
-        high = float(parts[1])
-        q2 = (low + high) / 2.0  # <-- split the difference
-    else:
-        raise ValueError(f"Invalid q2_sleep_latency_min value: {q2!r}")
+    q2_key = "q2_sleep_latency_min"
+    q2 = psqi_answers.get(q2_key)
+    q2 = split_the_difference(q2, q2_key)
 
     q5a = psqi_answers.get("q5a")
     if isinstance(q5a, str) and q5a.isdigit():
