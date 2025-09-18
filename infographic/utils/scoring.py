@@ -7,10 +7,10 @@ def psqi_c1_duration(psqi_answers: Dict[str, Any]) -> int:
     Based on the PSQI scoring guidelines:
     - q4_sleep_hours: reported hours of sleep (can be a number or a range like "6-7")
     Returns an integer score from 0 to 3.
-    0: >7 hours
-    1: 6-7 hours
-    2: 5-6 hours
-    3: <5 hours
+        0: >7 hours
+        1: 6-7 hours
+        2: 5-6 hours
+        3: <5 hours
 
     Raises ValueError if q4_sleep_hours is missing or invalid.
 
@@ -48,15 +48,15 @@ def psqi_c2_disturbance(psqi_answers: Dict[str, Any]) -> int:
 
     Based on the PSQI scoring guidelines:
     - q5b to q5i: frequency of various sleep disturbances:
-    0 = Not during the past month,
-    1 = Less than once a week,
-    2 = Once or twice a week,
-    3 = Three or more times a week
+        0 = Not during the past month,
+        1 = Less than once a week,
+        2 = Once or twice a week,
+        3 = Three or more times a week
     Returns an integer score from 0 to 3.
-    0: 0
-    1: 1-8
-    2: 9-16
-    3: 17-24
+        0: 0
+        1: 1-8
+        2: 9-16
+        3: 17-24
 
     Raises ValueError if any of q5b to q5i are missing or invalid.
 
@@ -101,10 +101,10 @@ def psqi_c3_latency(psqi_answers: Dict[str, Any]) -> int:
     Based on the PSQI scoring guidelines:
     - q2_sleep_latency_min: minutes to fall asleep (can be a number or a range like "15-30")
     - q5a: frequency of having trouble falling asleep within 30 minutes:
-      0 = Not during the past month,
-      1 = Less than once a week,
-      2 = Once or twice a week,
-      3 = Three or more times a week
+        0 = Not during the past month,
+        1 = Less than once a week,
+        2 = Once or twice a week,
+        3 = Three or more times a week
     Returns an integer score from 0 to 3. Based on q2 and q5a combined.
 
     Raises ValueError if q2_sleep_latency_min or q5a are missing or invalid.
