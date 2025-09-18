@@ -260,3 +260,28 @@ def psqi_c6_overall_sleep_quality(psqi_answers: Dict[str, Any]) -> int:
     q6 = valid_and_digit(q6, 0, 3, q6_key)
 
     return q6
+
+
+def psqi_c7_medication(psqi_answers: Dict[str, Any]) -> int:
+    """
+    Compute the use of sleep medication score (C7) for the PSQI.
+    Based on the PSQI scoring guidelines:
+    - q7: frequency of using sleep medication:
+        0 = Not during the past month,
+        1 = Less than once a week,
+        2 = Once or twice a week,
+        3 = Three or more times a week
+    Returns an integer score from 0 to 3.
+
+    Raises ValueError if q7 is missing or invalid.
+
+    :param psqi_answers: Dictionary of PSQI answers.
+
+    :return: Integer score for C7 use of sleep medication.
+    """
+
+    q7_key = "q7_sleep_medication"
+    q7 = psqi_answers.get(q7_key)
+    q7 = valid_and_digit(q7, 0, 3, q7_key)
+
+    return q7
