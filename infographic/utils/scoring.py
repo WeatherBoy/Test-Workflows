@@ -93,3 +93,66 @@ def psqi_c2_disturbance(psqi_answers: Dict[str, Any]) -> int:
         return 3
     else:
         raise ValueError(f"Invalid total disturbance score: {total_score!r}")
+
+
+def psqi_c3_latency(psqi_answers: Dict[str, Any]) -> int:
+    """
+    Compute the sleep latency score (C3) for the PSQI.
+    Based on the PSQI scoring guidelines:
+    - q2_sleep_latency_min: minutes to fall asleep (can be a number or a range like "15-30")
+    - q5a: frequency of having trouble falling asleep within 30 minutes:
+      0 = Not during the past month,
+      1 = Less than once a week,
+      2 = Once or twice a week,
+      3 = Three or more times a week
+    Returns an integer score from 0 to 3.
+    0: <15 min and q5a=0
+    1: 16-30 min or q5a=1
+    2: 31-60 min or q5a=2
+    3: >60 min or q5a=3
+
+    Raises ValueError if q2_sleep_latency_min or q5a are missing or invalid.
+
+    :param psqi_answers: Dictionary of PSQI answers.
+
+    :return: Integer score for C3 sleep latency.
+    """
+    q2 = psqi_answers.get("q2_sleep_latency_min")
+    if isinstance(q2, (int, float)):
+        q2 = float(q2)
+    elif isinstance(q2, str) and "-" in q2:
+        parts = q2.split("-")
+        low = float(parts[0])
+        high = float(parts[1])
+        q2 = (low + high) / 2.0  # <-- split the difference
+    else:
+        raise ValueError(f"Invalid q2_sleep_latency_min value: {q2!r}")
+
+    q5a = psqi_answers.get("q5a")
+    if isinstance(q5a, str) and q5a.isdigit():
+        q5a = int(q5a)
+    if q5a is None or not isinstance(q5a, int) or q5a < 0 or q5a > 3:
+        raise ValueError(f"Invalid q5a value: {q5a!r}")
+
+    q2new = None
+    if 0 <= q2 <= 15:
+        q2new = 0
+    elif 15 < q2 <= 30:
+        q2new = 1
+    elif 30 < q2 <= 60:
+        q2new = 2
+    elif q2 > 60:
+        q2new = 3
+    else:
+        raise ValueError(f"Invalid q2_sleep_latency_min value: {q2!r}")
+
+    if q5a + q2new == 0:
+        return 0
+    elif 1 <= q5a + q2new <= 2:
+        return 1
+    elif 3 <= q5a + q2new <= 4:
+        return 2
+    elif 5 <= q5a + q2new <= 6:
+        return 3
+    else:
+        raise ValueError(f"Invalid q2_sleep_latency_min or q5a values: {q2!r}, {q5a!r}")
