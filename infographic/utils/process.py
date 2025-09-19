@@ -113,13 +113,18 @@ def process_who5_response(response: Dict[str, Any]) -> Dict[str, int]:
 
     question_ids = ["Q1", "Q2", "Q3", "Q4", "Q5"]
     answer_range = (1, 5)
+    max_score = answer_range[1] * len(question_ids)
     overall_score = simple_response_to_score_map(response, question_ids, answer_range)
+
+    # Reverse WHO-5 scoring: higher raw score means better well-being
+    overall_score = max_score - overall_score
 
     percentage_score = overall_score * 4  # Scale to percentage (0-100)
 
     who5_response = {
-        "overall_score": overall_score,
         "percentage_score": percentage_score,
+        "overall_score": overall_score,
+        "max_score": max_score,
     }
 
     return who5_response
