@@ -1,11 +1,10 @@
-# src/render_infographic.py
 from pathlib import Path
 
 import plotly.graph_objects as go
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from plotly.offline import plot
 
-# --- 1) Example data (replace with your real questionnaire outputs) ---
+# --- sample data (unchanged structure) ---
 patient_data = {
     "patient_id": "P-001",
     "name_or_alias": "Patient A",
@@ -24,10 +23,10 @@ patient_data = {
         ("Access/finances", 4.0, "Can afford meds; asks for dietitian referral."),
     ],
     "highlights": [
-        "'I'm not sure what to eat when I'm hungry after 9 pm.'",
-        "'I skip the pill if I'm already in bed and remember too late.'",
-        "'Walking feels good, but I lose momentum after a week.'",
-        "'I want someone to show me a simple meal plan.'",
+        "“I'm not sure what to eat when I'm hungry after 9 pm.”",
+        "“I skip the pill if I'm already in bed and remember too late.”",
+        "“Walking feels good, but I lose momentum after a week.”",
+        "“I want someone to show me a simple meal plan.”",
     ],
     "flags": {
         "Adherence risk": True,
@@ -38,48 +37,116 @@ patient_data = {
     },
 }
 
-# --- 2) Build Plotly figures (same as your prototype) ---
-labels = [d[0] for d in patient_data["domains"]]
-scores = [d[1] for d in patient_data["domains"]]
-notes = [d[2] for d in patient_data["domains"]]
+# --- per-category cutoffs (edit freely or load from a JSON later) ---
+cutoffs = {
+    "Medication adherence": 5.0,
+    "Dietary habits": 7.0,
+    "Physical activity": 6.0,
+    "Glucose monitoring": 6.0,
+    "Sleep quality": 5.5,
+    "Mental wellbeing": 6.0,
+    # others omitted -> no cutoff (all blue)
+}
 
-radar_trace = go.Scatterpolar(
-    r=scores + [scores[0]],
-    theta=labels + [labels[0]],
-    mode="lines+markers",
-    fill="toself",
-    hovertemplate="<b>%{theta}</b><br>Score: %{r}/10<extra></extra>",
-)
-radar_fig = go.Figure(data=[radar_trace])
-radar_fig.update_layout(
-    polar=dict(radialaxis=dict(visible=True, range=[0, 10])),
-    title="Patient struggle profile (0-10)",
-    margin=dict(l=40, r=40, t=60, b=40),
-)
 
-top_k = 5
-sorted_pairs = sorted(zip(labels, scores, notes), key=lambda x: x[1], reverse=True)
-top_labels = [x[0] for x in sorted_pairs][:top_k]
-top_scores = [x[1] for x in sorted_pairs][:top_k]
+def slugify(text: str) -> str:
+    import re
 
-bar_trace = go.Bar(
-    x=top_scores[::-1],
-    y=top_labels[::-1],
+    s = text.lower()
+    s = re.sub(r"[^a-z0-9]+", "-", s)
+    return s.strip("-")
+
+
+# Build domain rows with slugs (for the table + anchors)
+domains = [
+    {"label": lbl, "score": sc, "note": note, "slug": slugify(lbl)}
+    for (lbl, sc, note) in patient_data["domains"]
+]
+
+# --- BAR (stacked by cutoff) ---
+# Sort bars by score (desc) for the overview
+sorted_domains = sorted(domains, key=lambda d: d["score"], reverse=True)
+
+labels_sorted = [d["label"] for d in sorted_domains]
+scores_sorted = [d["score"] for d in sorted_domains]
+slugs_sorted = [d["slug"] for d in sorted_domains]
+
+below, above = [], []
+for d in sorted_domains:
+    s = d["score"]
+    c = cutoffs.get(d["label"])
+    if c is None:
+        below.append(s)
+        above.append(0.0)
+    else:
+        below.append(min(s, c))
+        above.append(max(0.0, s - c))
+
+# Reverse arrays so highest appears at the TOP of the chart
+y = labels_sorted[::-1]
+x_below = below[::-1]
+x_above = above[::-1]
+cd = slugs_sorted[::-1]
+
+bars_below = go.Bar(
+    x=x_below,
+    y=y,
     orientation="h",
-    hovertemplate="<b>%{y}</b><br>Score: %{x}/10<extra></extra>",
+    name="≤ cutoff",
+    marker=dict(color="#6ea8fe"),
+    customdata=cd,
+    hovertemplate="<b>%{y}</b><br>≤ cutoff: %{x:.1f}/10<extra></extra>",
 )
-bar_fig = go.Figure(data=[bar_trace])
+bars_above = go.Bar(
+    x=x_above,
+    y=y,
+    orientation="h",
+    name="Above",
+    marker=dict(color="#ff6b6b"),
+    customdata=cd,
+    hovertemplate="<b>%{y}</b><br>Above: %{x:.1f}/10<extra></extra>",
+)
+
+bar_fig = go.Figure([bars_below, bars_above])
 bar_fig.update_layout(
-    title=f"Top {top_k} focus areas",
-    xaxis=dict(range=[0, 10]),
-    margin=dict(l=100, r=30, t=60, b=40),
+    barmode="stack",
+    title="Focus areas (with cutoffs)",
+    xaxis=dict(range=[0, 10], title=None),
+    yaxis=dict(title=None),
+    margin=dict(l=140, r=30, t=60, b=40),
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+)
+bar_div = plot(
+    bar_fig, include_plotlyjs=False, output_type="div", config={"responsive": True}
 )
 
-# Convert figures to embeddable <div> without bundling Plotly.js (template loads it via CDN)
-radar_div = plot(radar_fig, include_plotlyjs=False, output_type="div")
-bar_div = plot(bar_fig, include_plotlyjs=False, output_type="div")
+# --- (Optional) Radar; set show_radar=False to hide completely ---
+show_radar = False
+radar_div = ""
+if show_radar:
+    r = scores_sorted + [scores_sorted[0]]
+    th = labels_sorted + [labels_sorted[0]]
+    radar = go.Scatterpolar(
+        r=r,
+        theta=th,
+        mode="lines+markers",
+        fill="toself",
+        hovertemplate="<b>%{theta}</b><br>Score: %{r}/10<extra></extra>",
+    )
+    radar_fig = go.Figure([radar])
+    radar_fig.update_layout(
+        polar=dict(radialaxis=dict(visible=True, range=[0, 10])),
+        title="Patient struggle profile (0-10)",
+        margin=dict(l=40, r=40, t=60, b=40),
+    )
+    radar_div = plot(
+        radar_fig,
+        include_plotlyjs=False,
+        output_type="div",
+        config={"responsive": True},
+    )
 
-# --- 3) Render Jinja2 template ---
+# --- Render template ---
 env = Environment(
     loader=FileSystemLoader("html_templates"),
     autoescape=select_autoescape(enabled_extensions=("html", "xml")),
@@ -88,11 +155,12 @@ template = env.get_template("diabetes_consult.html")
 
 html = template.render(
     patient=patient_data,
-    radar_div=radar_div,
+    domains=domains,  # for table (original order)
     bar_div=bar_div,
+    radar_div=radar_div,
+    show_radar=show_radar,
 )
 
-# --- 4) Write file ---
 out_path = Path("data/dashboards/diabetes_consult_infographic.html")
 out_path.parent.mkdir(parents=True, exist_ok=True)
 out_path.write_text(html, encoding="utf-8")
