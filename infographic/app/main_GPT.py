@@ -183,20 +183,20 @@ summary_labels = []
 summary_values = []
 summary_custom = []
 
-for inst in instruments:
-    qid = inst["id"]
-    label = inst["label"]
+for instrument in instruments:
+    question_id = instrument["id"]
+    label = instrument["label"]
     rows = []
     total = 0
     max_total = 0
 
-    for item in inst["items"]:
-        iid = item["id"]
+    for item in instrument["items"]:
+        instrument_id = item["id"]
         scale_key = item["scale"]
         scale = SCALES[scale_key]
-        if iid not in responses.get(qid, {}):
+        if instrument_id not in responses.get(question_id, {}):
             continue
-        v = int(responses[qid][iid])
+        v = int(responses[question_id][instrument_id])
         rows.append(
             {
                 "question": item["text"],
@@ -211,8 +211,8 @@ for inst in instruments:
 
     sections.append(
         {
-            "id": qid,
-            "title": inst["title"],
+            "id": question_id,
+            "title": instrument["title"],
             "badge_text": "Scale 0-3 | higher = worse",
             "subtitle": "",
             "rows": rows,
@@ -221,7 +221,7 @@ for inst in instruments:
 
     summary_labels.append(label)
     summary_values.append(total)
-    summary_custom.append(f"{qid}-card")  # click → scroll target
+    summary_custom.append(f"{question_id}-card")  # click → scroll target
 
 # ------------ summary bar (vertical, unsorted, same order as instruments) ------------
 summary_fig = go.Figure(
