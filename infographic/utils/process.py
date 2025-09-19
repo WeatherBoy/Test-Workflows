@@ -47,41 +47,14 @@ def process_responses(answers: Dict[str, Any], comments: Dict[str, Any]):
         )
         process = processors.get(questionnaire_id)
         if process:
-            processed_data[questionnaire_id] = process(answers_specific)
+            response_score = process(answers_specific)
+            processed_data[questionnaire_id] = {
+                "answers": answers_specific,
+                "comments": comments_specific,
+                "scores": response_score,
+            }
 
     return processed_data
-
-
-def merge_id_answer_comment(
-    answers: Dict[str, Any],
-    comments: Dict[str, Any],
-) -> Dict[str, Dict[str, Any]]:
-    """
-    Merge answers and comments into a single dictionary.
-
-    :param answers: Dictionary of answers.
-    :param comments: Dictionary of comments.
-
-    :return: Merged dictionary with structure {question_id: {"answer": answer, "comment": comment}}.
-    """
-
-    merged: Dict[str, Dict[str, Any]] = {}
-
-    assert len(answers) == len(comments), (
-        "Answers and comments must have the same length!"
-    )
-
-    for key in answers.keys():
-        assert key in comments, f"Key {key} found in answers but not in comments!"
-        question_id = key
-        answer = answers.get(question_id)
-        comment = comments.get(question_id)
-        merged[question_id] = {
-            "answer": answer,
-            "comment": comment,
-        }
-
-    return merged
 
 
 def process_psqi_response(response: Dict[str, Any]) -> Dict[str, int]:
@@ -102,17 +75,19 @@ def process_psqi_response(response: Dict[str, Any]) -> Dict[str, int]:
     c5 = psqi_c5_sleep_efficiency(response)
     c6 = psqi_c6_overall_sleep_quality(response)
     c7 = psqi_c7_medication(response)
-    global_score = c1 + c2 + c3 + c4 + c5 + c6 + c7
+    overall_score = c1 + c2 + c3 + c4 + c5 + c6 + c7
 
     psqi_response = {
-        "C1_duration": c1,
-        "C2_disturbance": c2,
-        "C3_latency": c3,
-        "C4_day_dysfunction": c4,
-        "C5_sleep_efficiency": c5,
-        "C6_overall_sleep_quality": c6,
-        "C7_medication": c7,
-        "global_score": global_score,
+        "component_scores": {
+            "C1_duration": c1,
+            "C2_disturbance": c2,
+            "C3_latency": c3,
+            "C4_day_dysfunction": c4,
+            "C5_sleep_efficiency": c5,
+            "C6_overall_sleep_quality": c6,
+            "C7_medication": c7,
+        },
+        "overall_score": overall_score,
     }
 
     return psqi_response
@@ -131,9 +106,16 @@ def process_who5_response(response: Dict[str, Any]) -> Dict[str, int]:
 
     question_ids = ["Q1", "Q2", "Q3", "Q4", "Q5"]
     answer_range = (1, 5)
-    total_score = simple_response_to_score_map(response, question_ids, answer_range)
+    overall_score = simple_response_to_score_map(response, question_ids, answer_range)
 
-    return total_score
+    percentage_score = overall_score * 4  # Scale to percentage (0-100)
+
+    who5_response = {
+        "overall_score": overall_score,
+        "percentage_score": percentage_score,
+    }
+
+    return who5_response
 
 
 def process_hads_response(response: Dict[str, Any]) -> Dict[str, int]:
@@ -148,12 +130,12 @@ def process_hads_response(response: Dict[str, Any]) -> Dict[str, int]:
 
     anxiety_score = hads_anxiety(response)
     depression_score = hads_depression(response)
-    total_score = anxiety_score + depression_score
+    overall_score = anxiety_score + depression_score
 
     hads_response = {
         "anxiety_score": anxiety_score,
         "depression_score": depression_score,
-        "total_score": total_score,
+        "overall_score": overall_score,
     }
 
     return hads_response
@@ -171,9 +153,11 @@ def process_emotional_distress_response(response: Dict[str, Any]) -> Dict[str, i
 
     question_ids = ["B2-1", "B2-2", "B2-3", "B2-4", "B2-5", "B2-6"]
     answer_range = (0, 4)
-    total_score = simple_response_to_score_map(response, question_ids, answer_range)
+    overall_score = simple_response_to_score_map(response, question_ids, answer_range)
 
-    return total_score
+    emotional_distress_response = {"overall_score": overall_score}
+
+    return emotional_distress_response
 
 
 def process_food_behavior_response(response: Dict[str, Any]) -> Dict[str, int]:
@@ -185,11 +169,12 @@ def process_food_behavior_response(response: Dict[str, Any]) -> Dict[str, int]:
     :param response: Dictionary of Food Behavior answers.
     :return: Dictionary with food behavior score.
     """
-    questionnaire_id = "D1_FoodBehavior"
 
     question_ids = ["C1-1", "C1-2", "C1-3", "C1-4", "C1-5", "C1-6"]
     answer_range = (0, 4)
 
-    total_score = simple_response_to_score_map(response, question_ids, answer_range)
+    overall_score = simple_response_to_score_map(response, question_ids, answer_range)
 
-    return total_score
+    food_behavior_response = {"overall_score": overall_score}
+
+    return food_behavior_response
