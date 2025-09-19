@@ -1,0 +1,12 @@
+{
+    "patient_id": "P-001",
+    "metadata": {
+        "full_name": "Peter Hansen",
+        "cpr": "140985-1234",
+        "sex": "Male",
+        "phone": "+45 12 34 56 78",
+        "email": "phansen@mail.com",
+        "status": "Active",
+        "next_appointment": "2025-12-14"
+    }
+}
