@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 from utils.string_handling import (
     split_the_difference,
@@ -289,7 +289,7 @@ def psqi_c7_medication(psqi_answers: Dict[str, Any]) -> int:
     return q7
 
 
-def hads_anxiety(hads_answers: Dict[str, Any]) -> int:
+def hads_anxiety(hads_answers: Dict[str, Any]) -> Tuple[int, int]:
     """
     Compute the HADS Anxiety score.
     Based on the HADS scoring guidelines:
@@ -306,22 +306,25 @@ def hads_anxiety(hads_answers: Dict[str, Any]) -> int:
 
     :param hads_answers: Dictionary of HADS answers.
 
-    :return: Integer score for HADS Anxiety.
+    :return: Integer score for HADS Anxiety and max score.
     """
     anxiety_questions = ["A1", "A2", "A3", "A4", "A5", "A6", "A7"]
+    answer_range = (0, 3)
+    max_score = answer_range[1] * len(anxiety_questions)
+
     total_score = 0
     for q in anxiety_questions:
         val = hads_answers.get(q)
-        val = valid_and_digit(val, 0, 3, q)
+        val = valid_and_digit(val, answer_range[0], answer_range[1], q)
         if q == "A4":
             # Reverse score A4
             val = 3 - val
         total_score += val
 
-    return total_score
+    return total_score, max_score
 
 
-def hads_depression(hads_answers: Dict[str, Any]) -> int:
+def hads_depression(hads_answers: Dict[str, Any]) -> Tuple[int, int]:
     """
     Compute the HADS Depression score.
     Based on the HADS scoring guidelines:
@@ -338,19 +341,22 @@ def hads_depression(hads_answers: Dict[str, Any]) -> int:
 
     :param hads_answers: Dictionary of HADS answers.
 
-    :return: Integer score for HADS Depression.
+    :return: Integer score for HADS Depression and max score.
     """
     depression_questions = ["D1", "D2", "D3", "D4", "D5", "D6", "D7"]
+    answer_range = (0, 3)
+    max_score = answer_range[1] * len(depression_questions)
+
     total_score = 0
     for q in depression_questions:
         val = hads_answers.get(q)
-        val = valid_and_digit(val, 0, 3, q)
+        val = valid_and_digit(val, answer_range[0], answer_range[1], q)
         if q in ["D1", "D2", "D3", "D6", "D7"]:
             # scored reverse
             val = 3 - val
         total_score += val
 
-    return total_score
+    return total_score, max_score
 
 
 def danish_medicine_adherence_scale(dmas_answers: Dict[str, Any]) -> float:

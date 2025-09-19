@@ -140,14 +140,16 @@ def process_hads_response(response: Dict[str, Any]) -> Dict[str, int]:
     :return: Dictionary with anxiety score, depression score, and total score.
     """
 
-    anxiety_score = hads_anxiety(response)
-    depression_score = hads_depression(response)
+    anxiety_score, max_anxiety_score = hads_anxiety(response)
+    depression_score, max_depression_score = hads_depression(response)
     overall_score = anxiety_score + depression_score
+    max_score = max_anxiety_score + max_depression_score
 
     hads_response = {
         "anxiety_score": anxiety_score,
         "depression_score": depression_score,
         "overall_score": overall_score,
+        "max_score": max_score,
     }
 
     return hads_response
