@@ -3,6 +3,7 @@
 **/__pycache__/
 venvTestWorkflows/
 infographic/data/images/
+infographic/data/dashboards/tests/
 
 # LaTeX-specific ignores (scoped to the report directory)
 report/**/*.aux
