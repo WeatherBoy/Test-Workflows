@@ -27,7 +27,14 @@ QUESTTIONNAIRE_IDS = [
 
 
 def process_responses(answers: Dict[str, Any], comments: Dict[str, Any]):
-    """ """
+    """
+    Process the responses for all supported questionnaires.
+
+    :param answers: Dictionary of all answers.
+    :param comments: Dictionary of all comments.
+
+    :return: Dictionary with processed data for each questionnaire.
+    """
     processors: Dict[
         str, Callable[[Dict[str, Any]], Dict[str, int] | Dict[str, float]]
     ] = {
