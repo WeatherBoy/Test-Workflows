@@ -20,9 +20,14 @@ def latest_patient_response(patient_dir: Path) -> Path:
     """
     .glob yields an iterator of all .json files in the patient directory
     max(... ) finds the one with the latest filename considering patient responses
-    are in ISO 8601 format (YYYY-MM-DD.json) (lexicographically sortable)
+    are in ISO 8601 format (YYYY-MM-DD.json) (lexicographically sortable).
+
+    NOTE: now I added a metadata.json file, so we need to ensure we do not pick that one.
+    We do this by specifying the pattern "????-??-??.json" which matches only files
+    with names in the correct date format.
     """
-    latest_response = max(patient_dir.glob("*.json"))
+    # LOAD the latest response file THAT IS NOT called "metadata.json".
+    latest_response = max(patient_dir.glob("????-??-??.json"))
     return latest_response
 
 
