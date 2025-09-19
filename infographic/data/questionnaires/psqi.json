@@ -26,7 +26,7 @@
     "validation": {
         "default_required": true
     },
-    "items": [
+    "questions": [
         { "id": "q1_bedtime", "text": "During the past month, when have you usually gone to bed at night?", "type": "time_range"},
         { "id": "q2_sleep_latency_min", "text": "During the past month, how long (in minutes) has it usually taken you to fall asleep each night?", "type": "integer", "min": 0},
         { "id": "q3_getup_time", "text": "During the past month, when have you usually gotten up in the morning?", "type": "time_range"},
