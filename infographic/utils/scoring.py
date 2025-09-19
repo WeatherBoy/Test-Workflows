@@ -349,3 +349,28 @@ def hads_depression(hads_answers: Dict[str, Any]) -> int:
         total_score += val
 
     return total_score
+
+
+def simple_response_to_score_map(
+    answers: Dict[str, Any], questions: list[str], answer_range: tuple[int, int]
+) -> int:
+    """
+    Compute a simple total score for a questionnaire where each question has the same scoring range.
+    Each question is scored within the provided answer_range (inclusive).
+    Raises ValueError if any of the questions are missing or invalid.
+
+    :param answers: Dictionary of questionnaire answers.
+    :param questions: List of question IDs to include in the score.
+    :param answer_range: Tuple of (min, max) valid integer values for each question.
+
+    :return: Integer total score for the questionnaire.
+    """
+    total_score = 0
+
+    low_val, high_val = answer_range
+    for question_id in questions:
+        val = answers.get(question_id)
+        val = valid_and_digit(val, low_val, high_val, question_id)
+        total_score += val
+
+    return total_score
