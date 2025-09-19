@@ -130,3 +130,35 @@ def process_emotional_distress_response(response: Dict[str, Any]) -> Dict[str, i
     }
 
     return emotional_distress_response
+
+
+def process_food_behavior_response(response: Dict[str, Any]) -> Dict[str, int]:
+    """
+    This function processes the responses for a Food Behavior questionnaire.
+
+    The D1 - Food Behavior is a self-assessment scale to detect levels of food behavior. It was designed specifically for the DiaFocus project.
+
+    :param response: Dictionary of Food Behavior answers.
+    :return: Dictionary with food behavior score.
+    """
+
+    c1_1 = response.get("C1-1", 0)
+    c1_2 = response.get("C1-2", 0)
+    c1_3 = response.get("C1-3", 0)
+    c1_4 = response.get("C1-4", 0)
+    c1_5 = response.get("C1-5", 0)
+    c1_6 = response.get("C1-6", 0)
+
+    total_score = c1_1 + c1_2 + c1_3 + c1_4 + c1_5 + c1_6
+
+    food_behavior_response = {
+        "C1-1": c1_1,
+        "C1-2": c1_2,
+        "C1-3": c1_3,
+        "C1-4": c1_4,
+        "C1-5": c1_5,
+        "C1-6": c1_6,
+        "total_score": total_score,
+    }
+
+    return food_behavior_response
