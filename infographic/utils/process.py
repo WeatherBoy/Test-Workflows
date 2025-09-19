@@ -84,6 +84,8 @@ def process_psqi_response(response: Dict[str, Any]) -> Dict[str, int]:
     c7 = psqi_c7_medication(response)
     overall_score = c1 + c2 + c3 + c4 + c5 + c6 + c7
 
+    max_score = 21  # Maximum possible score for PSQI (7 components, each max 3 points)
+
     psqi_response = {
         "component_scores": {
             "C1_duration": c1,
@@ -95,6 +97,7 @@ def process_psqi_response(response: Dict[str, Any]) -> Dict[str, int]:
             "C7_medication": c7,
         },
         "overall_score": overall_score,
+        "max_score": max_score,
     }
 
     return psqi_response
@@ -220,8 +223,8 @@ def process_d4_dmas_response(response: Dict[str, Any]) -> Dict[str, float]:
     :return: Dictionary with DMAS score.
     """
 
-    overall_score = danish_medicine_adherence_scale(response)
+    overall_score, max_score = danish_medicine_adherence_scale(response)
 
-    dmas_response = {"overall_score": overall_score}
+    dmas_response = {"overall_score": overall_score, "max_score": max_score}
 
     return dmas_response

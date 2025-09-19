@@ -359,7 +359,9 @@ def hads_depression(hads_answers: Dict[str, Any]) -> Tuple[int, int]:
     return total_score, max_score
 
 
-def danish_medicine_adherence_scale(dmas_answers: Dict[str, Any]) -> float:
+def danish_medicine_adherence_scale(
+    dmas_answers: Dict[str, Any],
+) -> Tuple[float, float]:
     """
     Compute the Danish Medicine Adherence Scale (DMAS) score.
     NOTE: this is by far the least straightforward instrument and worst documented.
@@ -418,7 +420,9 @@ def danish_medicine_adherence_scale(dmas_answers: Dict[str, Any]) -> float:
     }
     total_score += d4_4_score_map[d4_4_answer] / 4  # get to scale of 0-1
 
-    return total_score
+    max_score = len(binary_questions) + 1.0  # max from binary questions + max from D4-4
+
+    return total_score, max_score
 
 
 def simple_response_to_score_map(
