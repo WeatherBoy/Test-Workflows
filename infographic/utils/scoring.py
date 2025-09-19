@@ -214,6 +214,8 @@ def psqi_c5_sleep_efficiency(psqi_answers: Dict[str, Any]) -> int:
     waketime = split_the_difference_datetime(q3, q3_key)
 
     # Now we have the bed time and wake time as datetime objects we must find the absolute difference in hours
+    if waketime <= bedtime:
+        waketime = waketime.replace(day=waketime.day + 1)  # assume next day
     total_time_in_bed_hours = (waketime - bedtime).total_seconds() / 3600.0
     assert 0 < total_time_in_bed_hours <= 24, (
         f"Invalid time in bed: {total_time_in_bed_hours!r}"
@@ -280,7 +282,7 @@ def psqi_c7_medication(psqi_answers: Dict[str, Any]) -> int:
     :return: Integer score for C7 use of sleep medication.
     """
 
-    q7_key = "q7_sleep_medication"
+    q7_key = "q7_sleep_meds"
     q7 = psqi_answers.get(q7_key)
     q7 = valid_and_digit(q7, 0, 3, q7_key)
 

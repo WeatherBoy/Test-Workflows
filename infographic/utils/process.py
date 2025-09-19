@@ -177,7 +177,17 @@ def process_food_behavior_response(response: Dict[str, Any]) -> Dict[str, int]:
     :return: Dictionary with food behavior score.
     """
 
-    question_ids = ["C1-1", "C1-2", "C1-3", "C1-4", "C1-5", "C1-6"]
+    question_ids = [
+        "D1-1",
+        "D1-2",
+        "D1-3",
+        "D1-4",
+        "D1-5",
+        "D1-6",
+        "D1-7",
+        "D1-8",
+        "D1-9",
+    ]
     answer_range = (0, 4)
 
     overall_score = simple_response_to_score_map(response, question_ids, answer_range)
