@@ -167,9 +167,14 @@ def process_emotional_distress_response(response: Dict[str, Any]) -> Dict[str, i
 
     question_ids = ["B2-1", "B2-2", "B2-3", "B2-4", "B2-5", "B2-6"]
     answer_range = (0, 4)
+    max_score = answer_range[1] * len(question_ids)
+
     overall_score = simple_response_to_score_map(response, question_ids, answer_range)
 
-    emotional_distress_response = {"overall_score": overall_score}
+    emotional_distress_response = {
+        "overall_score": overall_score,
+        "max_score": max_score,
+    }
 
     return emotional_distress_response
 
@@ -196,10 +201,11 @@ def process_food_behavior_response(response: Dict[str, Any]) -> Dict[str, int]:
         "D1-9",
     ]
     answer_range = (0, 4)
+    max_score = answer_range[1] * len(question_ids)
 
     overall_score = simple_response_to_score_map(response, question_ids, answer_range)
 
-    food_behavior_response = {"overall_score": overall_score}
+    food_behavior_response = {"overall_score": overall_score, "max_score": max_score}
 
     return food_behavior_response
 
