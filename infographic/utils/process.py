@@ -2,6 +2,7 @@ from typing import Any, Callable, Dict
 
 from helpers import get_specific_answers_and_comments
 from scoring import (
+    danish_medicine_adherence_scale,
     hads_anxiety,
     hads_depression,
     psqi_c1_duration,
@@ -14,10 +15,9 @@ from scoring import (
     simple_response_to_score_map,
 )
 
+# processable/ scorable questionnaire IDs
 QUESTTIONNAIRE_IDS = [
-    "B1_Lifestyle",
     "B2_EmotionalDistress",
-    "C_AreasOfConcern",
     "D1_FoodBehavior",
     "D4_DMAS",
     "WHO5",
@@ -28,12 +28,12 @@ QUESTTIONNAIRE_IDS = [
 
 def process_responses(answers: Dict[str, Any], comments: Dict[str, Any]):
     """ """
-    processors: Dict[str, Callable[[Dict[str, Any]], Dict[str, int]]] = {
-        "B1_Lifestyle": lambda x: x,  # No processing yet
+    processors: Dict[
+        str, Callable[[Dict[str, Any]], Dict[str, int] | Dict[str, float]]
+    ] = {
         "B2_EmotionalDistress": process_emotional_distress_response,
-        "C_AreasOfConcern": lambda x: x,  # No processing yet
         "D1_FoodBehavior": process_food_behavior_response,
-        "D4_DMAS": lambda x: x,  # No processing yet,
+        "D4_DMAS": process_d4_dmas_response,
         "WHO5": process_who5_response,
         "PSQI": process_psqi_response,
         "HADS": process_hads_response,
@@ -178,3 +178,20 @@ def process_food_behavior_response(response: Dict[str, Any]) -> Dict[str, int]:
     food_behavior_response = {"overall_score": overall_score}
 
     return food_behavior_response
+
+
+def process_d4_dmas_response(response: Dict[str, Any]) -> Dict[str, float]:
+    """
+    This function processes the responses for a DMAS questionnaire.
+
+    The D4 - DMAS is a self-assessment scale to detect levels of diabetes management. It was designed specifically for the DiaFocus project.
+
+    :param response: Dictionary of DMAS answers.
+    :return: Dictionary with DMAS score.
+    """
+
+    overall_score = danish_medicine_adherence_scale(response)
+
+    dmas_response = {"overall_score": overall_score}
+
+    return dmas_response
