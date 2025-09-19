@@ -1,7 +1,7 @@
 from typing import Any, Callable, Dict
 
-from helpers import get_specific_answers_and_comments
-from scoring import (
+from utils.helpers import get_specific_answers_and_comments
+from utils.scoring import (
     danish_medicine_adherence_scale,
     hads_anxiety,
     hads_depression,

@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from string_handling import (
+from utils.string_handling import (
     split_the_difference,
     split_the_difference_datetime,
     valid_and_digit,
