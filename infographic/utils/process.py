@@ -52,6 +52,38 @@ def process_responses(answers: Dict[str, Any], comments: Dict[str, Any]):
     return processed_data
 
 
+def merge_id_answer_comment(
+    answers: Dict[str, Any],
+    comments: Dict[str, Any],
+) -> Dict[str, Dict[str, Any]]:
+    """
+    Merge answers and comments into a single dictionary.
+
+    :param answers: Dictionary of answers.
+    :param comments: Dictionary of comments.
+
+    :return: Merged dictionary with structure {question_id: {"answer": answer, "comment": comment}}.
+    """
+
+    merged: Dict[str, Dict[str, Any]] = {}
+
+    assert len(answers) == len(comments), (
+        "Answers and comments must have the same length!"
+    )
+
+    for key in answers.keys():
+        assert key in comments, f"Key {key} found in answers but not in comments!"
+        question_id = key
+        answer = answers.get(question_id)
+        comment = comments.get(question_id)
+        merged[question_id] = {
+            "answer": answer,
+            "comment": comment,
+        }
+
+    return merged
+
+
 def process_psqi_response(response: Dict[str, Any]) -> Dict[str, int]:
     """
     This function processes the responses for a PSQI questionnaire.
