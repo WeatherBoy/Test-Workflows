@@ -351,6 +351,68 @@ def hads_depression(hads_answers: Dict[str, Any]) -> int:
     return total_score
 
 
+def danish_medicine_adherence_scale(dmas_answers: Dict[str, Any]) -> float:
+    """
+    Compute the Danish Medicine Adherence Scale (DMAS) score.
+    NOTE: this is by far the least straightforward instrument and worst documented.
+
+    Based on the DMAS scoring guidelines:
+    - The DMAS consists of 7 questions (D4-1 to D4-7).
+    - Questions D4-1, D4-2, D4-3, and D4-6 are binary (yes/no) questions where "yes" = 1 point and "no" = 0 points.
+    - Question D4-4 is a frequency question with 5 options:
+        "never" = 0 points
+        "rarely" = 1 point
+        "sometimes" = 2 points
+        "usually" = 3 points
+        "always" = 4 points
+    This score is then scaled to a 0-1 range by dividing by 4.
+    - Questions D4-5 and D4-7 are open-ended questions and are not scored.
+    The total DMAS score is the sum of the points from the binary questions and the scaled frequency question.
+
+    Raises ValueError if any of the DMAS questions are missing or invalid.
+
+    :param dmas_answers: Dictionary of DMAS answers.
+
+    :return: Float score for DMAS (0.0 to 5.0).
+    """
+    binary_questions = ["D4-1", "D4-2", "D4-3", "D4-6"]
+
+    total_score = 0
+
+    # Each "yes" in the binary questions adds 1 point
+    for question in binary_questions:
+        answer = dmas_answers.get(question)
+        assert isinstance(answer, str), (
+            f"Invalid answer type for {question}: {answer!r}, expected str"
+        )
+        answer = answer.lower()
+        assert answer in ["yes", "no"], (
+            f"Invalid answer for {question}: {answer!r}, expected 'yes' or 'no'"
+        )
+        if answer == "yes":
+            total_score += 1
+
+    # D4-4 is a frequency question with 5 options
+    d4_4_answer = dmas_answers.get("D4-4")
+    assert isinstance(d4_4_answer, str), (
+        f"Invalid answer type for D4-4: {d4_4_answer!r}, expected str"
+    )
+    d4_4_answer = d4_4_answer.lower()
+    assert d4_4_answer in ["never", "rarely", "sometimes", "usually", "always"], (
+        f"Invalid answer for D4-4: {d4_4_answer!r}, expected one of 'never', 'rarely', 'sometimes', 'usually', 'always'"
+    )
+    d4_4_score_map = {
+        "never": 0,
+        "rarely": 1,
+        "sometimes": 2,
+        "usually": 3,
+        "always": 4,
+    }
+    total_score += d4_4_score_map[d4_4_answer] / 4  # get to scale of 0-1
+
+    return total_score
+
+
 def simple_response_to_score_map(
     answers: Dict[str, Any], questions: list[str], answer_range: tuple[int, int]
 ) -> int:
