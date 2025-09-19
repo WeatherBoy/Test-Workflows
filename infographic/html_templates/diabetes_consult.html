@@ -77,6 +77,24 @@
     .callout { border-left: 3px solid var(--accent); padding-left: 10px; margin: 6px 0 0; color: var(--muted); font-size: 13px; }
 
     @media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+
+    .title-row {
+      display:flex; justify-content:space-between; align-items:center;
+      gap:12px; margin-bottom:4px;
+    }
+    .badge {
+      display:inline-block;
+      padding:6px 10px; border-radius:999px;
+      background: rgba(110,168,254,0.15);               /* uses your --accent hue */
+      border: 1px solid rgba(110,168,254,0.35);
+      color: #d9e7ff; font-weight:600; font-size: 13px; /* slightly larger */
+      letter-spacing: 0.02em;
+    }
+    .subtitle {
+      margin: 6px 0 12px; font-size: 14px; line-height: 1.35;
+      color: var(--muted);
+    }
+    .subtitle b { color: var(--text); }
   </style>
 </head>
 <body>
@@ -117,6 +135,7 @@
     <div class="card fullbleed" id="bar-container">
       <h2>Focus areas (with cutoffs)</h2>
       {{ bar_div|safe }}
+      <div class="subtle">Scale 0-{{ x_max or 10 }}</div>
       <div class="callout">Blue = ≤ cutoff · Red = above cutoff. Click a bar to jump to details below.</div>
     </div>
 
@@ -147,28 +166,37 @@
       </div>
     </div>
 
-    <div class="card" id="details">
-      <h2>Domain notes</h2>
-      <table>
-        <thead>
-          <tr><th>Domain</th><th>Score</th><th>Note</th></tr>
-        </thead>
-        <tbody>
-          {% for d in domains %}
-          <tr id="section-{{ d.slug }}">
-            <td>{{ d.label }}</td>
-            <td>{{ "%.1f"|format(d.score) }}</td>
-            <td>{{ d.note }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+  <div class="card" id="details">
+    <div class="title-row">
+      <h2>Pittsburgh Sleep Quality Index</h2>
+    <span class="badge">Scale 0-{{ x_max or 3 }} | higher = worse</span>
     </div>
-
-    <div class="footer-note">
-      Prototype. Not for clinical decision-making. Replace sample data in your Python loader.
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>Score</th>
+          <th>Translation</th>
+          <th>Comments</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in domains %}
+        <tr id="section-{{ d.slug }}">
+          <td>{{ d.question }}</td>
+          <td>{{ "%.1f"|format(d.score) }}</td>
+          <td>{{ d.translation }}</td>
+          <td>{{ d.comment }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
+
+  <div class="footer-note">
+    Prototype. Not for clinical decision-making. Replace sample data in your Python loader.
+  </div>
+</div>
 
   <!-- Click → jump handler -->
   <script>
