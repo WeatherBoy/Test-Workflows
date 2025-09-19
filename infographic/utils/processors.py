@@ -10,6 +10,7 @@ from scoring import (
     psqi_c5_sleep_efficiency,
     psqi_c6_overall_sleep_quality,
     psqi_c7_medication,
+    simple_response_to_score_map,
 )
 
 
@@ -23,6 +24,7 @@ def process_psqi_response(response: Dict[str, Any]) -> Dict[str, int]:
 
     :return: Dictionary with component scores and global score.
     """
+
     c1 = psqi_c1_duration(response)
     c2 = psqi_c2_disturbance(response)
     c3 = psqi_c3_latency(response)
@@ -56,25 +58,12 @@ def process_who5_response(response: Dict[str, Any]) -> Dict[str, int]:
 
     :return: Dictionary with total score and percentage score.
     """
-    q1 = response.get("Q1", 0)
-    q2 = response.get("Q2", 0)
-    q3 = response.get("Q3", 0)
-    q4 = response.get("Q4", 0)
-    q5 = response.get("Q5", 0)
-    total_score = q1 + q2 + q3 + q4 + q5
-    percentage_score = total_score * 4  # Scale to 0-100
 
-    who5_response = {
-        "Q1": q1,
-        "Q2": q2,
-        "Q3": q3,
-        "Q4": q4,
-        "Q5": q5,
-        "total_score": total_score,
-        "percentage_score": percentage_score,
-    }
+    question_ids = ["Q1", "Q2", "Q3", "Q4", "Q5"]
+    answer_range = (1, 5)
+    total_score = simple_response_to_score_map(response, question_ids, answer_range)
 
-    return who5_response
+    return total_score
 
 
 def process_hads_response(response: Dict[str, Any]) -> Dict[str, int]:
@@ -110,26 +99,11 @@ def process_emotional_distress_response(response: Dict[str, Any]) -> Dict[str, i
     :return: Dictionary with emotional distress score.
     """
 
-    b2_1 = response.get("B2-1", 0)
-    b2_2 = response.get("B2-2", 0)
-    b2_3 = response.get("B2-3", 0)
-    b2_4 = response.get("B2-4", 0)
-    b2_5 = response.get("B2-5", 0)
-    b2_6 = response.get("B2-6", 0)
+    question_ids = ["B2-1", "B2-2", "B2-3", "B2-4", "B2-5", "B2-6"]
+    answer_range = (0, 4)
+    total_score = simple_response_to_score_map(response, question_ids, answer_range)
 
-    total_score = b2_1 + b2_2 + b2_3 + b2_4 + b2_5 + b2_6
-
-    emotional_distress_response = {
-        "B2-1": b2_1,
-        "B2-2": b2_2,
-        "B2-3": b2_3,
-        "B2-4": b2_4,
-        "B2-5": b2_5,
-        "B2-6": b2_6,
-        "total_score": total_score,
-    }
-
-    return emotional_distress_response
+    return total_score
 
 
 def process_food_behavior_response(response: Dict[str, Any]) -> Dict[str, int]:
@@ -141,24 +115,9 @@ def process_food_behavior_response(response: Dict[str, Any]) -> Dict[str, int]:
     :param response: Dictionary of Food Behavior answers.
     :return: Dictionary with food behavior score.
     """
+    question_ids = ["C1-1", "C1-2", "C1-3", "C1-4", "C1-5", "C1-6"]
+    answer_range = (0, 4)
 
-    c1_1 = response.get("C1-1", 0)
-    c1_2 = response.get("C1-2", 0)
-    c1_3 = response.get("C1-3", 0)
-    c1_4 = response.get("C1-4", 0)
-    c1_5 = response.get("C1-5", 0)
-    c1_6 = response.get("C1-6", 0)
+    total_score = simple_response_to_score_map(response, question_ids, answer_range)
 
-    total_score = c1_1 + c1_2 + c1_3 + c1_4 + c1_5 + c1_6
-
-    food_behavior_response = {
-        "C1-1": c1_1,
-        "C1-2": c1_2,
-        "C1-3": c1_3,
-        "C1-4": c1_4,
-        "C1-5": c1_5,
-        "C1-6": c1_6,
-        "total_score": total_score,
-    }
-
-    return food_behavior_response
+    return total_score
