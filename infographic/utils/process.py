@@ -1,5 +1,6 @@
-from typing import Any, Dict
+from typing import Any, Callable, Dict
 
+from helpers import get_specific_answers_and_comments
 from scoring import (
     hads_anxiety,
     hads_depression,
@@ -12,6 +13,43 @@ from scoring import (
     psqi_c7_medication,
     simple_response_to_score_map,
 )
+
+QUESTTIONNAIRE_IDS = [
+    "B1_Lifestyle",
+    "B2_EmotionalDistress",
+    "C_AreasOfConcern",
+    "D1_FoodBehavior",
+    "D4_DMAS",
+    "WHO5",
+    "PSQI",
+    "HADS",
+]
+
+
+def process_responses(answers: Dict[str, Any], comments: Dict[str, Any]):
+    """ """
+    processors: Dict[str, Callable[[Dict[str, Any]], Dict[str, int]]] = {
+        "B1_Lifestyle": lambda x: x,  # No processing yet
+        "B2_EmotionalDistress": process_emotional_distress_response,
+        "C_AreasOfConcern": lambda x: x,  # No processing yet
+        "D1_FoodBehavior": process_food_behavior_response,
+        "D4_DMAS": lambda x: x,  # No processing yet,
+        "WHO5": process_who5_response,
+        "PSQI": process_psqi_response,
+        "HADS": process_hads_response,
+    }
+
+    processed_data = {}
+
+    for questionnaire_id in QUESTTIONNAIRE_IDS:
+        answers_specific, comments_specific = get_specific_answers_and_comments(
+            questionnaire_id, answers, comments
+        )
+        process = processors.get(questionnaire_id)
+        if process:
+            processed_data[questionnaire_id] = process(answers_specific)
+
+    return processed_data
 
 
 def process_psqi_response(response: Dict[str, Any]) -> Dict[str, int]:
@@ -115,6 +153,8 @@ def process_food_behavior_response(response: Dict[str, Any]) -> Dict[str, int]:
     :param response: Dictionary of Food Behavior answers.
     :return: Dictionary with food behavior score.
     """
+    questionnaire_id = "D1_FoodBehavior"
+
     question_ids = ["C1-1", "C1-2", "C1-3", "C1-4", "C1-5", "C1-6"]
     answer_range = (0, 4)
 
