@@ -37,6 +37,12 @@ def load_patient_responses(patient: str) -> Dict[str, Any]:
     return load_json(patient_response_path)
 
 
+def load_patient_metadata(patient: str) -> Dict[str, Any]:
+    patient_dir = RESPONSES_DIR / patient
+    metadata_path = patient_dir / "metadata.json"
+    return load_json(metadata_path)
+
+
 if __name__ == "__main__":
     # Example usage
     responses = load_patient_responses("P001")
