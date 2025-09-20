@@ -11,9 +11,9 @@ def load_json(json_path: Path) -> Dict[str, Any]:
         return json.load(f)
 
 
-def load_questionnaire(questionnaire_name: str) -> Dict[str, Any]:
-    questionnaire_path = INSTRUMENTS_DIR / f"{questionnaire_name}.json"
-    return load_json(questionnaire_path)
+def load_instrument(instrument_id: str) -> Dict[str, Any]:
+    instrument_path = INSTRUMENTS_DIR / f"{instrument_id}.json"
+    return load_json(instrument_path)
 
 
 def latest_patient_response(patient_dir: Path) -> Path:
@@ -54,7 +54,6 @@ def load_instruments() -> List[Dict[str, Any]]:
 if __name__ == "__main__":
     # Example usage
     responses = load_patient_responses("P001")
-    # questionnaire = load_questionnaire("psqi")
     print(responses)
     print("\n\n\n")
     print(responses["questionnaires"]["PSQI"])
