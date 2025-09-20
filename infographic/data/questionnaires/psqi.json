@@ -1,5 +1,6 @@
 {
-    "instrument": "PSQI",
+    "instrument_id": "PSQI",
+    "title": "Pittsburgh Sleep Quality Index (PSQI)",
     "version": "1.0",
     "scales": {
         "frequency": {
