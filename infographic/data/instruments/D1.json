@@ -1,0 +1,30 @@
+{
+    "instrument_id": "D1",
+    "title": "D1 - Food Behavior",
+    "version": "1.0",
+    "scales": {
+        "frequency": {
+            "id": "freq_0_4",
+            "range": [0, 4],
+            "labels": {
+                "0": "Never",
+                "1": "Rarely",
+                "2": "Sometimes",
+                "3": "Often",
+                "4": "Always"
+            }
+        }
+    },
+    "validation": { "default_required": true },
+    "questions": [
+        { "id": "D1-1", "text": "I can't find the time to make healthy meals.", "type": "scale", "scale": "frequency" },
+        { "id": "D1-2", "text": "Dealing with food outside the home is difficult (eating at restaurants, eating at friends' houses, going to parties, eating at work).", "type": "scale", "scale": "frequency" },
+        { "id": "D1-3", "text": "I eat food just because it is there.", "type": "scale", "scale": "frequency" },
+        { "id": "D1-4", "text": "Sticking to my meal plan just seems too hard.", "type": "scale", "scale": "frequency" },
+        { "id": "D1-5", "text": "It is difficult to avoid high-fat foods.", "type": "scale", "scale": "frequency" },
+        { "id": "D1-6", "text": "I eat when I am bored or stressed.", "type": "scale", "scale": "frequency" },
+        { "id": "D1-7", "text": "My friends and family make it hard for me to stick to a healthy eating plan.", "type": "scale", "scale": "frequency" },
+        { "id": "D1-8", "text": "I am hungry when I follow a healthy eating plan.", "type": "scale", "scale": "frequency" },
+        { "id": "D1-9", "text": "I feel hopeless because I have tried and failed so many times.", "type": "scale", "scale": "frequency" }
+    ]
+}
