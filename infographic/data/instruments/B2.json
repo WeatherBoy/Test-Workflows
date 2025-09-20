@@ -1,0 +1,29 @@
+{
+    "instrument_id": "B2",
+    "title": "B2 - Emotional Distress",
+    "version": "1.0",
+    "scales": {
+        "problem_severity": {
+            "id": "problem_0_4",
+            "range": [0, 4],
+            "labels": {
+                "0": "Not a problem",
+                "1": "Minor problem",
+                "2": "Moderate problem",
+                "3": "Somewhat serious problem",
+                "4": "Serious problem"
+            }
+        }
+    },
+    "validation": {
+        "default_required": true
+    },
+    "questions": [
+        { "id": "B2-1", "text": "Feeling depressed when you think about living with diabetes?", "type": "scale", "scale": "problem_severity" },
+        { "id": "B2-2", "text": "Feeling that diabetes is taking up too much of your mental and physical energy?", "type": "scale", "scale": "problem_severity" },
+        { "id": "B2-3", "text": "Feeling overwhelmed by your diabetes?", "type": "scale", "scale": "problem_severity" },
+        { "id": "B2-4", "text": "Feeling constantly concerned about food and eating?", "type": "scale", "scale": "problem_severity" },
+        { "id": "B2-5", "text": "Feeling alone with your diabetes?", "type": "scale", "scale": "problem_severity" },
+        { "id": "B2-6", "text": "Feeling \"burned out\" by the constant effort needed to manage diabetes?", "type": "scale", "scale": "problem_severity" }
+    ]
+}
