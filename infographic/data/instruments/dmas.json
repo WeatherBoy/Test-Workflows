@@ -1,0 +1,17 @@
+{
+    "instrument_id": "D4_DMAS",
+    "title": "D4 - Danish Medication Adherence Scale (DMAS)",
+    "version": "1.0",
+    "validation": {
+        "default_required": true
+    },
+    "questions": [
+        { "id": "D4-1", "text": "Do you sometimes forget to take your medications?"},
+        { "id": "D4-2", "text": "People sometimes miss taking their medications for reasons other than forgetting. Thinking over the past two weeks, were there any days when you did not take your medications?"},
+        { "id": "D4-3", "text": "When you travel or leave home, do you sometimes forget to bring along your medications?"},
+        { "id": "D4-4", "text": "How often do you have difficulty remembering to take all your medications?"},
+        { "id": "D4-5", "text": "How many types of diabetes medicine (prescribed) are you taking on a regular basis?"},
+        { "id": "D4-6", "text": "Is there diabetes medicine you don't buy because it is too expensive for you?"},
+        { "id": "D4-7", "text": "Who takes care that you take your prescribed diabetes medicine?"}
+    ]
+}
