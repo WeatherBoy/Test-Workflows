@@ -1,0 +1,28 @@
+{
+    "instrument_id": "WHO5",
+    "title": "WHO-5 Well-Being Index",
+    "version": "1.0",
+    "scales": {
+        "frequency": {
+            "id": "frequency_1_5",
+            "range": [1, 5],
+            "labels": {
+                "5": "All of the time",
+                "4": "Most of the time",
+                "3": "More than half the time",
+                "2": "Less than half the time",
+                "1": "Some of the time"
+            }
+        }
+    },
+    "validation": {
+        "default_required": true
+    },
+    "questions": [
+        { "id": "Q1", "text": "I have felt cheerful and in good spirits.", "type": "scale", "scale": "frequency" },
+        { "id": "Q2", "text": "I have felt calm and relaxed.", "type": "scale", "scale": "frequency" },
+        { "id": "Q3", "text": "I have felt active and vigorous.", "type": "scale", "scale": "frequency" },
+        { "id": "Q4", "text": "I woke up feeling fresh and rested.", "type": "scale", "scale": "frequency" },
+        { "id": "Q5", "text": "My daily life has been filled with things that interest me.", "type": "scale", "scale": "frequency" }
+    ]
+}
