@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List
 
-QUESTIONNAIRES_DIR = Path("data/questionnaires")
+INSTRUMENTS_DIR = Path("data/instruments")
 RESPONSES_DIR = Path("data/responses")
 
 
@@ -12,7 +12,7 @@ def load_json(json_path: Path) -> Dict[str, Any]:
 
 
 def load_questionnaire(questionnaire_name: str) -> Dict[str, Any]:
-    questionnaire_path = QUESTIONNAIRES_DIR / f"{questionnaire_name}.json"
+    questionnaire_path = INSTRUMENTS_DIR / f"{questionnaire_name}.json"
     return load_json(questionnaire_path)
 
 
@@ -41,6 +41,14 @@ def load_patient_metadata(patient: str) -> Dict[str, Any]:
     patient_dir = RESPONSES_DIR / patient
     metadata_path = patient_dir / "metadata.json"
     return load_json(metadata_path)
+
+
+def load_instruments() -> List[Dict[str, Any]]:
+    instruments = []
+    for istrument_file in INSTRUMENTS_DIR.glob("*.json"):
+        instrument = load_json(istrument_file)
+        instruments.append(instrument)
+    return instruments
 
 
 if __name__ == "__main__":
