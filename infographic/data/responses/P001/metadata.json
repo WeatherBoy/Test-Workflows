@@ -4,6 +4,7 @@
         "full_name": "Peter Hansen",
         "cpr": "140985-1234",
         "sex": "Male",
+        "height_cm": 182,
         "phone": "+45 12 34 56 78",
         "email": "phansen@mail.com",
         "status": "Active",
