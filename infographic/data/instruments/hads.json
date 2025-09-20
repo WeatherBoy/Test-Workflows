@@ -1,0 +1,35 @@
+{
+    "instrument_id": "HADS",
+    "title": "Hospital Anxiety and Depression Scale (HADS)",
+    "version": "1.0",
+    "scales": {
+        "frequency_time": {
+            "id": "freq_time_0_3",
+            "range": [0, 3],
+            "labels": {
+                "0": "Not at all",
+                "1": "some of the time",
+                "2": "Most of the time",
+                "3": "Yes, all of the time"
+            }
+        }
+    },
+    "validation": { "default_required": true },
+    "questions": [
+        { "id": "A1", "text": "I feel tense or 'wound up'.", "type": "scale", "scale": "frequency_time" },
+        { "id": "A2", "text": "I get a sort of frightened feeling as if something awful is about to happen.", "type": "scale", "scale": "frequency_time" },
+        { "id": "A3", "text": "Worrying thoughts go through my mind.", "type": "scale", "scale": "frequency_time" },
+        { "id": "A4", "text": "I can sit at ease and feel relaxed.", "type": "scale", "scale": "frequency_time" },
+        { "id": "A5", "text": "I get a sort of frightened feeling like 'butterflies' in the stomach.", "type": "scale", "scale": "frequency_time" },
+        { "id": "A6", "text": "I feel restless as I have to be on the move.", "type": "scale", "scale": "frequency_time" },
+        { "id": "A7", "text": "I get sudden feelings of panic.", "type": "scale", "scale": "frequency_time" },
+
+        { "id": "D1", "text": "I still enjoy the things I used to enjoy.", "type": "scale", "scale": "frequency_time" },
+        { "id": "D2", "text": "I can laugh and see the funny side of things.", "type": "scale", "scale": "frequency_time" },
+        { "id": "D3", "text": "I feel cheerful.", "type": "scale", "scale": "frequency_time" },
+        { "id": "D4", "text": "I feel as if I am slowed down.", "type": "scale", "scale": "frequency_time" },
+        { "id": "D5", "text": "I have lost interest in my appearance.", "type": "scale", "scale": "frequency_time" },
+        { "id": "D6", "text": "I look forward with enjoyment to things.", "type": "scale", "scale": "frequency_time" },
+        { "id": "D7", "text": "I can enjoy a good book or radio or TV program.", "type": "scale", "scale": "frequency_time" }
+    ]
+}
