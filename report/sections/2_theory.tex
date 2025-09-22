@@ -14,7 +14,7 @@ As a testament to their vision, in September $2012$ HL7 announced their intentio
 As for the FHIR standard itself, in January $2018$, Apple announced that their \emph{Health App} on their iPhones would support a FHIR-compliant medical record~\cite{Apple-Health}. In $2020$, the United States Centres for Medicare \& Medicaid Services (CMS) issued a rule that required the use of FHIR by a slew of CMS-regulated payers. These were, amongst others, Medicare Advantage organisations, U.S. state Medicaid programmes and qualified health plans in the Federally Facilitated Marketplace~\cite{CMS-9115-F}. Also in $2020$, the "Minist\'{e}rio da Sa\'{u}de do Brasil" (The Brazilian Ministry of Health) announced the inception of one of the world's largest platforms for national health interoperability. The "Rede Nacional de Dados em Sa\'{u}de" (National Health Data Network) or RNDS, as it is called, uses HL7's FHIR r4 (fourth release\footnote{As of writing in September of $2025$, FHIR is at release five.}) for all its information exchanges~\cite{RNDS}.
 
 \subsubsection*{FHIR technical details}
-The FHIR standard is incredibly thorough, as one might expect for a standard intended for global digital exchange of healthcare data. As such, this theory section will first touch briefly on the core building blocks, then showcase an example, and finally give a brief overview of the underlying technical structure\footnote{I struggle with using the term \emph{architecture} here, as I fear it would seem to reference their backend, when in reality I intend to refer to the structural hiearchy upon which the FHIR standard is defined.}.
+The FHIR standard is incredibly thorough, as one might expect for a standard intended for global digital exchange of healthcare data. As such, this theory section will first touch briefly on the core building blocks, then showcase an example, and finally give a brief overview of the underlying technical framework\footnote{I struggle with using the term \emph{architecture} here, as I fear it would seem to reference their backend, when in reality I intend to refer to the structural hiearchy upon which the FHIR standard is defined.}.
 \\ 
 All exchangeable information in FHIR is referred to as a \emph{Resource}. These can most commonly be thought of as \texttt{classes} as per Java syntax. From the official FHIR overview~\cite{FHIR-overview}, it is stated that all \emph{resources} share the following three characteristics:
 \begin{itemize}
@@ -59,8 +59,8 @@ However, the \texttt{Patient} definition in itself contains a wide array of elem
     \label{fig:FHIR-patient-resource}
 \end{figure}
 
-\noindent
-Speaking of cardinality, FHIR supports four different types of cardinalities for elements within \emph{resource} definitions. Namely,
+\subsubsection*{Cardinality and Flags}
+On the topic of cardinality, FHIR supports four different types of cardinalities for elements within \emph{resource} definitions. Namely,
 \begin{itemize}
     \item $0..1$: zero or one element,
     \item $0..^\ast$: zero or more elements,
@@ -70,3 +70,52 @@ Speaking of cardinality, FHIR supports four different types of cardinalities for
 
 \noindent
 In addition to cardinality, FHIR supports quite a handful of flags, as can be seen in the \textbf{Flags} column of \autoref{fig:FHIR-patient-resource}. There are flags as simple as \texttt{summary}, given by a capital Greek sigma, $\Sigma$, indicating that the flagged element is important enough to be a part of the summary for its parent \emph{resource}. The summary flag is intended to make search results more manageable. There are, however, also flags such as the \texttt{is-modifier}, given by a question mark followed by an exclamation mark $?!$. This flag is kind of a 'warning label', saying that the value of the element flagged with \texttt{is-modifier} will change the meaning of the rest of the parent \emph{resource}. For \texttt{Patient}, it makes perfect sense that the \texttt{deceased} element is flagged with \texttt{is-modifier}. Another way to understand \texttt{is-modifier} is the example given in the documentation~\cite{FHIR-isModifier-flag}. The \texttt{Observation} \texttt{DomainResource} is intended to cover measurements and simple observations. However, it has an element, \texttt{status}, of type \texttt{code} which is flagged with \texttt{is-modifier}. The \texttt{code} \texttt{primitive type} indicates that the element can only take the value of a set of predefined \emph{strings}. For \texttt{Observation.status}, one of those predefined \emph{strings} was "\emph{entered-in-error}", which would null the entire \texttt{Observation} instance. So, although the existence of an instance of type \texttt{Observation} would indicate to a user that there in fact had been such an 'observation', the \texttt{status} element might have completely nullified that preconception. 
+\\
+There are a few other flags\footnote{All the different types of flags are: \texttt{is-modifier}, \texttt{mustSupport}, \texttt{summary}, \texttt{constraint}, \texttt{noExtensions} and then three describing 'versions': \texttt{trialUse}, \texttt{normative} and \texttt{draft}. They are all described in-depth in the documentation ~\cite{FHIR-flags-overview}.}; however, we will be moving on to the underlying technical framework of FHIR.
+
+\subsubsection*{FHIR \texttt{Type} Framework}
+Having disclosed the main building blocks, a \emph{resource}, and an example, \texttt{Patient}, it is time to take a look at the underlying data hierarchy. As briefly alluded to earlier, there are a bunch of different data types in FHIR, and although the \emph{resource} is still "queen of the ball", there has been some additional thought poured into the FHIR standard.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/theory/FHIR-Type-Framework.png}
+    \caption{FHIR \texttt{Type} \emph{framework}}
+    \medskip
+    \small
+    \raggedright
+    FHIR's \texttt{Type} \emph{framework}. It can be found at ~\cite{FHIR-type-framework}.
+    \label{fig:FHIR-Type-Framework}
+\end{figure}
+
+\noindent
+\autoref{fig:FHIR-Type-Framework} gives a good overview of the framework, and from it, we can see that all types inherit from the same base type, \texttt{Base}. Yet, there are two main branches.
+
+\subsubsection*{\emph{Resource} Types}
+There are three non-\texttt{DomainResource} \emph{resources}, they are \texttt{Bundle}, \texttt{Parameters} and \texttt{Binary}. All three are very high-level and tied to FHIR's underlying functionality and definitions. Most importantly and applicable for all three, though, is that none of them adhere to the previously addressed \emph{resource} definition. FHIR isn't designed with the intent of purposefully pulling up an instance of \texttt{Binary} as one would an instance of \texttt{Observation} or \texttt{Patient}.
+\\
+In turn, the \texttt{DomainResource} are the aforementioned \emph{resources}. These are designed to cover real-world medical tangibles, such as a patient journal or an observation made by a healthcare professional. 
+\\
+The two, \texttt{CanonicalResource} and \texttt{MetadataResource}, are further levels of specification. Mentioning these and starting to list examples would be way too specific for the scope of this report.
+
+\subsubsection*{\emph{Element} Types}
+The \emph{Element} types split into two main categories, the \texttt{DataType}s and \texttt{BackboneElement}s. We have already briefly touched upon \texttt{BackboneElement} types in the closer look at the \texttt{Patient} \emph{resource}. \texttt{BackboneElement}s are tied to their parent \emph{resource}, as it were for the \texttt{Patient.contact} element. In other words, elements of type \texttt{BackboneElement} don't necessarily appear in any other \emph{resources} than their parent \emph{resource}. In turn, this allows for the creation of flexible "lists", so to speak, which can contain multiple different elements of varying types.
+\\
+As for the \texttt{DataType} type, it seems somewhat like a catch-all, but maybe more accurately a type for all the common subtypes of elements of actual \emph{resources}. The list of \texttt{DataType}s is myriad, and in appendix \autoref{fig:FHIR-data-types-overview}, an overview is provided.
+\\
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/theory/FHIR-Primitive-Types.png}
+    \caption{FHIR \texttt{PrimitiveType}s overview}
+    \medskip
+    \small
+    \raggedright
+    An overview of FHIR's \texttt{PrimitiveType}s. It can be found at ~\cite{FHIR-data-types-overview}.
+    \label{fig:FHIR-Primitive-Types}
+\end{figure}
+
+\noindent
+We will refrain from delving deeper into the \texttt{BackboneType}, so finally, there are the \texttt{PrimitiveTypes}. These are, in large part, the common types one would be familiar with as a programmer. They are \texttt{string}, \texttt{base64Binary}, \texttt{unsignedInt}, \texttt{boolean} and so on. However, there are also a few additional ones, like \texttt{code}, which we have already mentioned and which designates a set of predefined \emph{strings} to choose from. \texttt{markdown} is simply a field which allows for \emph{Markdown} formatted text. And \texttt{URI} is a \emph{Unique Resource Identifier}, an ID of sorts.
+
+\subsection{Questionnaires}
+
