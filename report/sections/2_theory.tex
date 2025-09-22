@@ -27,8 +27,9 @@ All exchangeable information in FHIR is referred to as a \emph{Resource}. These 
 	\end{itemize}
 	\item There is a "human-readable" part, which, albeit, is an incredibly vague characteristic. In the FHIR documentation, it is called a \texttt{Narrative}. Which itself takes the shape of a \emph{resource}\footnote{Although this, at first glance, might seem like a circular definition (it at least had me fooled), the \texttt{Narrative} element is in fact a \texttt{special purpose datatype}. And \texttt{Datatype}s are very different from \emph{resources}, which we'll get back to in a little while.}, and is defined by containing an element called \texttt{div} of type \texttt{xhtml} (a specialised primitive datatype). If the \texttt{Narrative} element is flagged as 'non-empty', then its XHTML "SHALL reflect all content needed for a human to understand the essential clinical and business information for the \emph{resource}"~\cite{FHIR-Narrative}.
 \end{itemize}
+
 \noindent
-Now, instead of meticulously going through every single \emph{resource} definition in FHIR, because, as can be seen in \autoref{fig:FHIR-resource-index}, there are quite a lot, we'll briefly go over the \texttt{Patient} \emph{resource}.
+Now, instead of meticulously going through every single \emph{resource} definition in FHIR, because, as can be seen in appendix \autoref{fig:FHIR-resource-index}, there are quite a lot, we'll briefly go over the \texttt{Patient} \emph{resource}.
 
 \subsubsection*{The \texttt{Patient} resource}
 The \texttt{Patient} \emph{resource} covers "information about an individual or animal receiving health care services"~\cite{FHIR-patient-resource}. An overview of the \texttt{Patient} \emph{resource} definition (anno 2025) from the official FHIR documentation can be seen in \autoref{fig:FHIR-patient-resource}. Here, the quick reader might note that, although we've just covered that \emph{resources} share three characteristics, one of which is that they service a "human-readable" part, the definition of the \texttt{Patient} \emph{resource} doesn't contain a \texttt{Narrative} element. This is because \texttt{Patient} \emph{extends} the \texttt{DomainResource} type, which in turn is defined by having a \texttt{text} element of type \texttt{narrative} (amongst other elements). An overview of the \texttt{DomainResource} \emph{superclass} can be seen in \autoref{fig:FHIR-DomainResource-resource}.
@@ -45,18 +46,7 @@ The \texttt{Patient} \emph{resource} covers "information about an individual or 
 \end{figure}
 
 \noindent
-However, the \texttt{Patient} definition in itself contains a wide array of elements. 16 in total, discounting sub-elements of \texttt{BackboneElement}s. To mention a few, there is the very useful \emph{boolean} \texttt{active}, which indicates whether the patient's record is being actively used. Similarly, but still distinct, is the \texttt{deceased} element, which contains two elements of \texttt{PrimitiveType}. A \emph{boolean} and a \emph{dateTime}, if the \emph{boolean} is set to true, indicating the time of decease. Additionally, \texttt{Patient} contains elements pertaining to the available methods of communication for the actual patient, in spoken as well as nonverbal language, and their preferred method of communication. Also, the \texttt{contact} \texttt{BackboneElement}, which details the contact information for a contact of the patient. 
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/theory/FHIR-resource-index.png}
-    \caption{FHIR \emph{resource} index}
-    \medskip
-    \small
-    \raggedright
-    FHIR's full overview of all their \emph{resources}. It can be found at ~\cite{FHIR-resource-index}.
-    \label{fig:FHIR-resource-index}
-\end{figure}
+However, the \texttt{Patient} definition in itself contains a wide array of elements. 16 in total, discounting sub-elements of \texttt{BackboneElement}s. To mention a few, there is the very useful \emph{boolean} \texttt{active}, which indicates whether the patient's record is being actively used. Similarly, but still distinct, is the \texttt{deceased} element, which contains two elements of \texttt{PrimitiveType}. A \emph{boolean} and a \emph{dateTime}, if the \emph{boolean} is set to true, indicating the time of decease. Additionally, \texttt{Patient} contains elements pertaining to the available methods of communication for the actual patient, in spoken as well as nonverbal language, and their preferred method of communication. Also, the \texttt{contact} \texttt{BackboneElement}, which details the contact information for a contact of the patient, intuitively, since it has a cardinality of $0..^\ast$ (as shown in the \textbf{Card.} column in \autoref{fig:FHIR-patient-resource}), a single \texttt{Patient} instance can contain multiple \texttt{contact}s.
 
 \begin{figure}[H]
     \centering
@@ -68,3 +58,15 @@ However, the \texttt{Patient} definition in itself contains a wide array of elem
     FHIR's \texttt{Patient} \emph{resource}. It can be found at ~\cite{FHIR-patient-resource}.
     \label{fig:FHIR-patient-resource}
 \end{figure}
+
+\noindent
+Speaking of cardinality, FHIR supports four different types of cardinalities for elements within \emph{resource} definitions. Namely,
+\begin{itemize}
+    \item $0..1$: zero or one element,
+    \item $0..^\ast$: zero or more elements,
+    \item $1..1$: exactly one element,
+    \item $1..^\ast$: at least one or more elements.
+\end{itemize}
+
+\noindent
+In addition to cardinality, FHIR supports quite a handful of flags, as can be seen in the \textbf{Flags} column of \autoref{fig:FHIR-patient-resource}. There are flags as simple as \texttt{summary}, given by a capital Greek sigma, $\Sigma$, indicating that the flagged element is important enough to be a part of the summary for its parent \emph{resource}. The summary flag is intended to make search results more manageable. There are, however, also flags such as the \texttt{is-modifier}, given by a question mark followed by an exclamation mark $?!$. This flag is kind of a 'warning label', saying that the value of the element flagged with \texttt{is-modifier} will change the meaning of the rest of the parent \emph{resource}. For \texttt{Patient}, it makes perfect sense that the \texttt{deceased} element is flagged with \texttt{is-modifier}. Another way to understand \texttt{is-modifier} is the example given in the documentation~\cite{FHIR-isModifier-flag}. The \texttt{Observation} \texttt{DomainResource} is intended to cover measurements and simple observations. However, it has an element, \texttt{status}, of type \texttt{code} which is flagged with \texttt{is-modifier}. The \texttt{code} \texttt{primitive type} indicates that the element can only take the value of a set of predefined \emph{strings}. For \texttt{Observation.status}, one of those predefined \emph{strings} was "\emph{entered-in-error}", which would null the entire \texttt{Observation} instance. So, although the existence of an instance of type \texttt{Observation} would indicate to a user that there in fact had been such an 'observation', the \texttt{status} element might have completely nullified that preconception. 
