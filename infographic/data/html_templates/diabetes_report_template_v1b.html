@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ report_meta.brand }} – {{ report_meta.report_title }}</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    :root{
+      --bg:#0b0e14; --panel:#11151d; --muted:#9aa4b2; --text:#e7edf3; --accent:#6ea8fe;
+    }
+    html,body{height:100%;margin:0;background:radial-gradient(1200px 800px at 80% 0%, #0e1320, #0b0e14 60%);color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";}
+    .container{max-width:1200px;margin:24px auto 64px;padding:0 16px;}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.08);
+      border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,0.35);backdrop-filter:blur(6px);margin-top:16px;}
+    .title-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:4px;}
+    h1,h2{margin:0;letter-spacing:.2px} h1{font-size:28px} h2{font-size:18px}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(110,168,254,0.15);
+      border:1px solid rgba(110,168,254,0.35);color:#d9e7ff;font-weight:600;font-size:13px;letter-spacing:.02em}
+    .subtitle{margin:6px 0 12px;font-size:14px;line-height:1.35;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:16px}
+    .fullbleed{grid-column:1/-1}
+    .meta{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:16px}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand .logo{font-size:20px}
+    .brand .name{font-size:24px;color:#6ea8fe;font-weight:700}
+    .muted{color:var(--muted)}
+    .kv{display:grid;grid-template-columns:auto 1fr;gap:2px 10px}
+    .k{color:var(--muted);font-size:13px}
+    .v{font-weight:600}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{border-bottom:1px dashed rgba(255,255,255,0.1);padding:8px 6px;vertical-align:top}
+    th{text-align:left;color:var(--muted);font-weight:500;letter-spacing:.02em}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}.meta{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="card">
+        <div class="meta">
+            <div class="brand">
+                <div class="logo">👥</div>
+                <div>
+                    <div class="name">{{ report_meta.brand }}</div>
+                    <div class="muted">{{ report_meta.report_title }}</div>
+                    <div class="muted">Report ID: {{ report_meta.report_id }}</div>
+                    <div class="muted">Generated: {{ report_meta.generated }}</div>
+                </div>
+            </div>
+
+            <div class="kv">
+                <div class="k">Full name</div><div class="v">{{ patient.full_name }}</div>
+                <div class="k">CPR number</div><div class="v">{{ patient.cpr }}</div>
+                <div class="k">Sex</div><div class="v">{{ patient.sex }}</div>
+            </div>
+
+            <div class="kv">
+                <div class="k">Phone number</div><div class="v">{{ patient.phone }}</div>
+                <div class="k">E-mail</div><div class="v">{{ patient.email }}</div>
+                <div class="k">Status</div><div class="v">{{ patient.status }}</div>
+                <div class="k">Next consultation</div><div class="v">{{ patient.next_appointment }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary bar (vertical; order = instruments) -->
+    <div class="card fullbleed" id="summary-container">
+      <div class="title-row">
+        <h2>Questionnaire summary</h2>
+      </div>
+      {{ summary_bar_div|safe }}
+      <div class="subtitle">Click a bar to jump to its questionnaire section below.</div>
+    </div>
+
+    <!-- Questionnaire cards -->
+    {% macro questionnaire_card(section) -%}
+    <div class="card" id="{{ section.id }}-card">
+      <div class="title-row">
+        <h2>{{ section.title }}</h2>
+        {% if section.badge_text %}<span class="badge">{{ section.badge_text }}</span>{% endif %}
+      </div>
+      {% if section.subtitle %}<div class="subtitle">{{ section.subtitle|safe }}</div>{% endif %}
+
+      <table>
+        <thead>
+          <tr><th>Question</th><th>Score</th><th>Translation</th><th>Comments</th></tr>
+        </thead>
+        <tbody>
+          {% for d in section.rows %}
+          <tr id="{{ section.id }}-{{ d.slug }}">
+            <td>{{ d.question }}</td>
+            <td>
+                {% if d.score is number %}
+                    {{ '%.1f'|format(d.score) }}
+                {% elif d.score is none or d.score == '' %}
+                    N/A
+                {% else %}
+                    {{ d.score }}
+                {% endif %}
+            </td>
+            <td>{{ d.translation }}</td>
+            <td>{{ d.comment }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {%- endmacro %}
+
+    {% for s in sections %}
+      {{ questionnaire_card(s) }}
+    {% endfor %}
+
+  </div>
+
+  <!-- Click → scroll -->
+  <script>
+  (function(){
+    const gd = document.querySelector('#summary-container .plotly-graph-div');
+    if (!gd || !gd.on) return;
+    gd.on('plotly_click', function (ev) {
+      const pt = ev && ev.points && ev.points[0];
+      const id = pt && pt.customdata;
+      const el = id && document.getElementById(id);
+      if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  })();
+  </script>
+</body>
+</html>
