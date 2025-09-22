@@ -79,35 +79,35 @@
     <!-- Questionnaire cards -->
     {% macro questionnaire_card(section) -%}
     <div class="card" id="{{ section.id }}-card">
-      <div class="title-row">
-        <h2>{{ section.title }}</h2>
-        {% if section.badge_text %}<span class="badge">{{ section.badge_text }}</span>{% endif %}
-      </div>
-      {% if section.subtitle %}<div class="subtitle">{{ section.subtitle|safe }}</div>{% endif %}
+        <div class="title-row">
+            <h2>{{ section.title }}</h2>
+            {% if section.badge_text %}<span class="badge">{{ section.badge_text }}</span>{% endif %}
+        </div>
+        {% if section.subtitle %}<div class="subtitle">{{ section.subtitle|safe }}</div>{% endif %}
 
-      <table>
-        <thead>
-          <tr><th>Question</th><th>Score</th><th>Translation</th><th>Comments</th></tr>
-        </thead>
-        <tbody>
-          {% for d in section.rows %}
-          <tr id="{{ section.id }}-{{ d.slug }}">
-            <td>{{ d.question }}</td>
-            <td>
-                {% if d.score is number %}
-                    {{ '%.1f'|format(d.score) }}
-                {% elif d.score is none or d.score == '' %}
-                    N/A
-                {% else %}
-                    {{ d.score }}
-                {% endif %}
-            </td>
-            <td>{{ d.translation }}</td>
-            <td>{{ d.comment }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        <table>
+            <thead>
+                <tr><th>Question</th><th>Answer</th><th>Translation</th><th>Comments</th></tr>
+            </thead>
+            <tbody>
+                {% for d in section.rows %}
+                <tr id="{{ section.id }}-{{ d.slug }}">
+                <td>{{ d.question }}</td>
+                <td>
+                    {% if d.answer is number %}
+                        {{ d.answer }}
+                    {% elif d.answer %}
+                        {{ d.answer }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>{{ d.translation or '' }}</td>
+                <td>{{ d.comment or '' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     {%- endmacro %}
 
