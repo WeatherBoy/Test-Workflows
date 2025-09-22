@@ -268,6 +268,7 @@ def get_section_rows(
         section_rows.append(
             {
                 "question": question_text,
+                "answer": answer,
                 "score": score,
                 "translation": translation,
                 "comment": comment,
