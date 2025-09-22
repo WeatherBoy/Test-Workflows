@@ -332,20 +332,22 @@ def get_translation(
 
     :return: The translation for the answer.
     """
+    if scales is None or answer is None:
+        return ""
 
-    if scales is None:
-        translation = ""
-    elif answer is None:
-        translation = ""
+    question_scale_key = question.get("scale", "")
+    question_scale = scales.get(question_scale_key) or {}
+    labels = question_scale.get("labels") or {}
+
+    # Coerce the answer to match JSON label keys ("0","1","2",...)
+    if isinstance(answer, int):
+        key = str(answer)
+    elif isinstance(answer, float):
+        key = str(int(answer)) if abs(answer - int(answer)) < 1e-9 else str(answer)
     else:
-        question_scale_key = question.get("scale", "")
-        question_scale = scales.get(question_scale_key, {})
-        translation = question_scale.get("labels", {}).get(answer, "")
+        key = str(answer)
 
-    if translation is None:
-        print(
-            f"in `get_translation`: answer = {answer}, translation = {translation}\n\n"
-        )
+    translation = labels.get(key, "")
 
     return translation
 
