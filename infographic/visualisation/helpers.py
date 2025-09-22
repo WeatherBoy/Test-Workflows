@@ -262,7 +262,7 @@ def get_section_rows(
         answer = get_answer(answers, question_id, instrument_id)
         score = get_answer_score(answer)
         translation = get_translation(scales, answer, question)
-        comment = comments.get(question_id, "")
+        comment = get_comment(comments, question_id)
 
         # Fill section row
         section_rows.append(
@@ -297,6 +297,24 @@ def get_answer(
         f"No answer found for question {question_id} in instrument {instrument_id}"
     )
     return answer
+
+
+def get_comment(comments: Dict[str, Any], question_id: str) -> int | str:
+    """
+    Given a dictionary of comments, return the comment for the given question ID.
+    If no comment is found, return an empty string.
+
+    :param comments: The dictionary of comments.
+    :param question_id: The question ID to look for.
+
+    :return: The comment for the given question ID, or an empty string if not found.
+    """
+
+    comment = comments.get(question_id)
+    if comment is None:
+        comment = ""
+
+    return comment
 
 
 def get_translation(
