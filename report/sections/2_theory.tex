@@ -18,17 +18,34 @@ The FHIR standard is incredibly thorough, as one might expect for a standard int
 \\ 
 All exchangeable information in FHIR is referred to as a \emph{Resource}. These can most commonly be thought of as \texttt{classes} as per Java syntax. From the official FHIR overview~\cite{FHIR-overview}, it is stated that all \emph{resources} share the following three characteristics:
 \begin{itemize}
-	\item There exists a common definition or representation. This representation is often made up of datatypes (which we'll touch upon in further detail later on), which define some common reusable patterns.
+	\item There exists a common definition or representation. This representation is often made up of \texttt{Datatype}s (which we'll touch upon in further detail later on), which define some common reusable patterns.
 	\item There is a common set of metadata. Some examples of which are, but not limited to:
 	\begin{itemize}
 		\item A \texttt{versionID} which changes each time the content (datatypes and definition) of the \emph{resource} is changed.
 		\item  A \texttt{lastUpdated}, which is heavily linked to the aforementioned metadata. It tracks \textbf{when} there last was a change to the content of a \emph{resource}.
 		\item A \texttt{source} which stores a Uniform Resource Identifier (URI) of another \emph{resource} instance or a perhaps more general identifier, which is intended to help illuminate the source for the information contained within the current \emph{resource}. 
 	\end{itemize}
-	\item There is a "human-readable" part, which, albeit, is an incredibly vague characteristic. In the FHIR documentation, it is called a \texttt{Narrative}. Which itself takes the shape of a \emph{resource}\footnote{Although this, at first glance, might seem like a circular definition (it at least had me fooled), the \texttt{Narrative} \emph{element} is in fact a \texttt{special purpose datatype}. And \texttt{Datatype}s are very different from \emph{resources}, which we'll get back to in a little while.}, and is defined by containing an \emph{element} called \texttt{div} of type \texttt{xhtml} (a specialised primitive datatype). If the \texttt{Narrative} \emph{resource} is flagged as 'non-empty', then its XHTML "SHALL reflect all content needed for a human to understand the essential clinical and business information for the \emph{resource}"~\cite{FHIR-Narrative}.
+	\item There is a "human-readable" part, which, albeit, is an incredibly vague characteristic. In the FHIR documentation, it is called a \texttt{Narrative}. Which itself takes the shape of a \emph{resource}\footnote{Although this, at first glance, might seem like a circular definition (it at least had me fooled), the \texttt{Narrative} element is in fact a \texttt{special purpose datatype}. And \texttt{Datatype}s are very different from \emph{resources}, which we'll get back to in a little while.}, and is defined by containing an element called \texttt{div} of type \texttt{xhtml} (a specialised primitive datatype). If the \texttt{Narrative} element is flagged as 'non-empty', then its XHTML "SHALL reflect all content needed for a human to understand the essential clinical and business information for the \emph{resource}"~\cite{FHIR-Narrative}.
 \end{itemize}
 \noindent
 Now, instead of meticulously going through every single \emph{resource} definition in FHIR, because, as can be seen in \autoref{fig:FHIR-resource-index}, there are quite a lot, we'll briefly go over the \texttt{Patient} \emph{resource}.
+
+\subsubsection*{The \texttt{Patient} resource}
+The \texttt{Patient} \emph{resource} covers "information about an individual or animal receiving health care services"~\cite{FHIR-patient-resource}. An overview of the \texttt{Patient} \emph{resource} definition (anno 2025) from the official FHIR documentation can be seen in \autoref{fig:FHIR-patient-resource}. Here, the quick reader might note that, although we've just covered that \emph{resources} share three characteristics, one of which is that they service a "human-readable" part, the definition of the \texttt{Patient} \emph{resource} doesn't contain a \texttt{Narrative} element. This is because \texttt{Patient} \emph{extends} the \texttt{DomainResource} type, which in turn is defined by having a \texttt{text} element of type \texttt{narrative} (amongst other elements). An overview of the \texttt{DomainResource} \emph{superclass} can be seen in \autoref{fig:FHIR-DomainResource-resource}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/theory/FHIR-DomainResource-resource.png}
+    \caption{FHIR \texttt{DomainResource} \emph{resource}}
+    \medskip
+    \small
+    \raggedright
+    FHIR's \texttt{DomainResource} \emph{resource}. It can be found at ~\cite{FHIR-DomainResource-resource}.
+    \label{fig:FHIR-DomainResource-resource}
+\end{figure}
+
+\noindent
+However, the \texttt{Patient} definition in itself contains a wide array of elements. 16 in total, discounting sub-elements of \texttt{BackboneElement}s. To mention a few, there is the very useful \emph{boolean} \texttt{active}, which indicates whether the patient's record is being actively used. Similarly, but still distinct, is the \texttt{deceased} element, which contains two elements of \texttt{PrimitiveType}. A \emph{boolean} and a \emph{dateTime}, if the \emph{boolean} is set to true, indicating the time of decease. Additionally, \texttt{Patient} contains elements pertaining to the available methods of communication for the actual patient, in spoken as well as nonverbal language, and their preferred method of communication. Also, the \texttt{contact} \texttt{BackboneElement}, which details the contact information for a contact of the patient. 
 
 \begin{figure}[H]
     \centering
