@@ -33,3 +33,4 @@ report/*.acr
 report/*.alg
 # Report-specific ignores
 report/figures/
+report/_minted/
