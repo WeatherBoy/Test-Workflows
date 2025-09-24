@@ -44,7 +44,7 @@ From discussing the proposition with my friends, I gathered a lot. For one, I go
 \\
 A common denominator between diabetes patients and pregnant women is that their "care pathways", or, maybe more so, consultations are pretty set in stone. For pregnant women, we know almost to a tee how their progress is gonna be. For diabetes patients, the overall structure of their consultations is fairly consistent. It usually takes the shape of a bi-annual "check-up". Which doesn't differ much in content every six months.
 \\
-We had struck gold! In collaboration with my friends, I had found not only a single common care pathway, but two very strong candidates. Yet, a fundamental problem persisted. Expertise.
+We had struck gold! In collaboration with my friends, I had found not only a single common care pathway, but two very strong candidates. Yet, a fundamental problem persisted, Expertise.
 \\
 Although we could find plenty of information \textbf{for} pregnant women and how their progress is supposed to look, even down to the week, it was arduous to figure out what kind of data the medical practitioner would be interested in. What kind of questions would the medical practitioner be asking, and so on and so forth. 
 \\
@@ -56,6 +56,85 @@ It was at this point that my supervisor proposed I use the same questionnaire in
 
 
 \subsection{Generating reports for medical consultations based on questionnaire responses}
-Now the path was laid. I would use the same eight questionnaires as detailed in the DiaFocus project and as described in \autoref{sec:theory-questionnaire}. I started by gathering some qualitative data by spending roughly an hour interviewing a type-1 diabetes patient. We went through all eight questionnaires, a process I will elaborate on further in the analysis, and the results of this can be seen in appendix \autoref{sec:questionnaire-answers}. With the answers in hand, I set out to convert them into an actual HTML report.
+Now the path was laid. I would use the same eight questionnaires as detailed in the DiaFocus project and as described in \autoref{sec:theory-questionnaire}. I started by gathering some qualitative data by spending roughly an hour interviewing a type-1 diabetes patient. We went through all eight questionnaires, a process I will elaborate on further in the analysis. The questionnaire answers from this interview can be seen in appendix \autoref{sec:questionnaire-answers}. With the answers in hand, I set out to convert them into an actual HTML report.
+\\
+I did this by combining a JSON file of responses with matching JSON files of the questionnaire instruments. The JSON file of responses can be found in a directory named after the patient's ID. As I only had one response, that response can be found in the "P001" directory. The responses were titled according to the date of the response in accordance with the ISO 8601 standard, or perhaps more familiarly, as [YYYY]-[MM]-[DD]. This allowed for the program to, by default, present the newest responses as ISO 8601 is in lexicographic order, from newest to oldest.
+\\
+The responses took the following form as JSON files:
 
+\begin{minted}{json}
+{
+    "patient_id": "P-XXX",
+    "visit_date": "YYYY-MM-DD",
+    "questionnaires": {
+        "questionnaire_id": {
+            "question_id": "answer",
+            "question_id": {
+                "answer": "answer",
+                "comment": "comment"
+            }
+            "...": "..."
+        },
+        "...": "..."
+    }
+}
+\end{minted}
 
+\noindent
+From the above JSON snippet, we can see that for the \texttt{"question_id"}, its values can take two different forms. Either it can be a plain answer, as indicated by the \texttt{"answer"} value, or it can be a tuple of both \texttt{"answer"} and \texttt{"comment"}. This was introduced with the intended purpose that the user, the diabetes patient, could add additional information when filling out the questionnaire, if they felt it was important for the medical practitioner to take note. This, however, introduced some complications to the system as the \emph{comments} had to be filtered out when scoring and labelling the answers, but stored, so that they could later be reintroduced into the final HTML report.
+\\
+\\
+The instrument JSON files were placed in a separate directory labelled "instruments". They were simply titled with a shorthand for the appropriate instrument. The approach here wasn't extremely sophisticated, as the program simply always goes through all the JSON files in the "instruments" directory and checks whether there is a corresponding response in the response JSON.
+\\
+The instruments then took the following form as JSON files:
+\begin{minted}{json}
+{
+    "instrument_id": "questionnaire_id",
+    "title": "questionnaire title",
+    "version": "X.X",
+    "scales": {
+        "scale": {
+            "scale_id": "id",
+            "range": ["min", "max"],
+            "labels": {
+                "value": "label",
+                "...": "..."
+            }
+        },
+        "...": "..."
+    },
+    "validation": {
+        "default_required": "boolean",
+        "optional_questions": ["question_id", "..."]
+    },
+    "questions": [
+        {
+            "id": "question_id",
+            "text": "question text",
+            "type": "text/number/choice/...",
+            "scale": "scale_id",
+        },
+        "...": "..."
+    ]
+}
+\end{minted}
+
+\noindent
+For the way I set up the processing, it was of utmost importance that the \texttt{"instrument_id"} of the instrument JSON matched the \texttt{"questionnaire_id"} of the response JSON. Likewise for the \texttt{"id"} tag's value (\texttt{"question_id"}) in the \texttt{"questions"} list of the instrument JSON and the \texttt{"question_id"} tag in the response JSON.
+\\
+\\
+In \autoref{fig:python-system-overview} is an attempt at giving an (incomplete) overview of how the system works. The system is built entirely in Python, and the codebase can be seen in its entirety on GitHub \github{https://github.com/WeatherBoy/Test-Workflows}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{figures/methodology/python_system.png}
+    \caption{Overview of the Python system architecture}
+    \medskip
+    \small
+    \raggedright
+    An overview of the Python system architecture. The processed \texttt{responses} and \texttt{instruments} are then merged into a final HTML report.
+    \label{fig:python-system-overview}
+\end{figure}
+
+\noindent
+After a lot of work and frustrating debugging (as it often is with coding), I ended up with an HTML report ready for testing. A PDF version of the report can be found in appendix \autoref{sec:html-report-pdf}.
