@@ -123,7 +123,7 @@ The instruments then took the following form as JSON files:
 For the way I set up the processing, it was of utmost importance that the \texttt{"instrument_id"} of the instrument JSON matched the \texttt{"questionnaire_id"} of the response JSON. Likewise for the \texttt{"id"} tag's value (\texttt{"question_id"}) in the \texttt{"questions"} list of the instrument JSON and the \texttt{"question_id"} tag in the response JSON.
 \\
 \\
-In \autoref{fig:python-system-overview} is an attempt at giving an (incomplete) overview of how the system works. The system is built entirely in Python, and the codebase can be seen in its entirety on GitHub \github{https://github.com/WeatherBoy/Test-Workflows}.
+In \autoref{fig:python-system-overview} is an attempt at giving an (incomplete) overview of how the system works. The system is built entirely in Python, with the exception of a bit of HTML code, in the form of HTML templates used in conjunction with the \texttt{Jinja2} engine. The codebase can be seen in its entirety on GitHub \github{https://github.com/WeatherBoy/Test-Workflows}.
 
 \begin{figure}[H]
     \centering
