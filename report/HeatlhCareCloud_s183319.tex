@@ -44,6 +44,8 @@
 
 \usepackage{fancyhdr}   % <-- for the header and footer
 \pagestyle{fancy}   % <-- used to great extent for the title page header
+\usepackage{minted} % <-- for inserting code with syntax highlighting
+\setminted{breaklines, fontsize=\small}
 
 % Make github logo
 \usepackage{fontawesome5}
@@ -122,10 +124,8 @@
     \include{sections/6_conclusion.tex}
 
     \listoffigures
-    \newpage
 
     \listoftables
-    \newpage½
 
     \include{sections/software_versions.tex}
     \include{sections/appendix.tex}
