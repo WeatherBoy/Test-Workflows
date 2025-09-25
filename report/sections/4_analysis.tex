@@ -1,1 +1,38 @@
 \section{Analysis}
+In the analysis, I will mostly cover the interviews I performed and the resulting insights. Firstly, I'll go over the answers I got from the single individual, with whom I went through all eight questionnaires. 
+
+\subsection{The questionnaire responses}
+The answers themselves aren't all that interesting on their own. Without "de-anonymising" the participant too greatly, I can briefly add that they have lived with type 1 diabetes for over thirty years, and as such, they have built strong habits. Therefore, their day-to-day isn't vastly negatively affected by the disease. Also, as alluded to by the comment to the B2-6 question of the B2 - Emotional Distress questionnaire\footnote{Which can be seen in appendix \autoref{sec:B2-emotional-distress-answers}.}, they are instead grateful that it can be "fixed" to such a strong degree and that they still get to live their life the way they want.
+\\
+However, after roughly an hour of interview and going through every question, I was definitely left with greater insight. First and foremost, answering all the questions in one sitting, in a row, was definitely never the intended way. As it is also stated in the DiaFocus report, the D1 (Food Behaviour), D2 (Pittsburgh Sleep Quality Index (PSQI) ), D3 (Hospital Anxiety and Depression Scale (HADS) ) and D4 questionnaires were issued based on what the patient themselves found to be important areas of concern (as answered by the C - Areas of Concern questionnaire). Additionally, the B1 - Life Style Information questionnaire would only be answered initially. After an initial consultation with a healthcare practitioner, the patient was then expected to answer the B2 - Emotional Distress and B3 - Well-Being (WHO-5) continuously, as in, on a weekly, bi-weekly or monthly basis, alongside the agreed-upon, between patient and healthcare practitioner, selection of D1, D2, D3 and D4.
+\\
+In \autoref{fig:diafocus-questionnaire-flow} can be seen the intended flow of the questionnaires as per the DiaFocus project~\cite{DiaFocus}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{figures/analysis/diafocus_questionnaire_flow.png}
+    \caption{DiaFocus questionnaire flow.}
+    \medskip
+    \small
+    \raggedright
+    Description from the DiaFocus report: "The flow of questionnaires in DiaFocus starts from when the user installs the app, signs in, and starts using the application.". The image is taken from ~\cite{DiaFocus}.
+    \label{fig:diafocus-questionnaire-flow}
+\end{figure}
+
+\noindent
+As for the B4 - Diet \& Exercise and B5 - Blood Glucose, these were intended to be sampled in cooperation with the patient's mobile OS for the DiaFocus application, or in the case of B5, manually filled in, if the patient doesn't have an insulin pump. This is also why both of these, quite important, data points are lacking from my final HTML report.
+\\
+\\
+For full transparency, I altered the setup a bit for the HADS and WHO-5 questionnaires post the interview. Originally, I had made a carbon copy of the DiaFocus' instruments; however, according to the WHO documentation~\cite{WHO5}, a higher score indicates a better well-being. I then changed both the instrument of appendix \autoref{sec:who-5} and the answers of appendix \autoref{sec:who-5-answers} accordingly. Albeit, I completely understand the motive behind reversing the scores, as they would then be directly comparable with the results of the other questionnaires. I "solved" this by reversing the score of the WHO-5 for the HTML report. 
+\\
+For the HADS, the objective truth seems murky. Quite a lot of sources~\cite{Wiki-HADS, DiaFocus, HADS, HADS-StrokEngine, HADS-2017, HADS-Danish} agree on there being a verified instrument called the Hospital Anxiety and Depression Scale, which has 14 questions, rated on a scale of $[0, 3]$, with questions split evenly between the areas of anxiety and depression. From the original work, Zigmond et al.~\cite{HADS}, one might infer that a higher numeric score indicates greater signs of anxiety and depression, based on their indicated cut-off points and the phrasing of the numeric value to phrase translation in the appendix. Regardless, this is never stated explicitly.  
+\\
+Additionally, from Zigmond et al.~\cite{HADS}, the instrument wasn't made with a single uniform translation for every question. Instead, almost every question had a unique numeric value to phrase translation. Combined, with multiple sources~\cite{HADS-StrokEngine, HADS-Danish}  stating that some of the questions were reverse scored, yet, differing in the exact amount, this leaves a murky image.
+\\
+I elected to reverse the overall scoring of the HADS, post responses and even change the wording, such that it was more in line with a majority of sources~\cite{HADS, HADS-StrokEngine, HADS-2017, HADS-Danish}. From my own intuition, and believing a handful would be flipped in score, I elected to choose that question four\footnote{"I can sit at ease and feel relaxed."} of the anxiety instrument, was flipped and that questions one\footnote{"I still enjoy the things I used to enjoy."}, 
+two\footnote{"I can laugh and see the funny side of things."}, three\footnote{"I feel cheerful."}, and six\footnote{"I look forward with enjoyment to things."} and seven\footnote{"I can enjoy a good book or radio or TV program."} was flipped.
+\\
+This is how it has been scored for the final HTML report moving forward.
+
+\subsection{Testing the HTML report}
+
