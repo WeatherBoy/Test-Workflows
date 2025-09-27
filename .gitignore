@@ -31,6 +31,8 @@ report/*.ist
 report/*.acn
 report/*.acr
 report/*.alg
+report/*.data.minted
+report/*.config.minted
 # Report-specific ignores
 report/figures/
 report/_minted/
