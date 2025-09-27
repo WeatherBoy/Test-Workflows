@@ -62,8 +62,67 @@ All three of the medical students were in agreement that the current v.2b of the
 \\
 Temporal data would be in the form of 1) the ongoing results from the questionnaires, 2) the data gotten from the OS, e.g. the B4 questionnaire from the "Continuous Assessment" section of \autoref{fig:diafocus-questionnaire-flow}, and 3) data gotten from external applications, such as the blood glucose measurements and perhaps data from a sleep app. This way, it would be possible to see a development, rather than the current setup, which solely provides a snapshot.
 \\
-Examination results would be like journal entries, but for the necessary and crucial examinations regarding diabetes patients. These are the eye, heart, kidney and feet examinations, as noted by the Official Danish Medical Handbook (Lægehåndbogen)~\cite{SundhedDK-diabetes}, performed in order to spot any issues which commonly lead to long-term medical complications for diabetes patients. "B" noted that he assumed that "B" themselves would perform the eye and foot examinations during consultations, but regardless of whether prior examinations were present, "B" would like to have them included in the HTML report. 
+Examination results would be like journal entries, but for the necessary and crucial examinations regarding diabetes patients. These are the eye, heart, kidney and foot examinations, as noted by the Official Danish Medical Handbook (Lægehåndbogen)~\cite{SundhedDK-diabetes}, performed in order to spot any issues which commonly lead to long-term medical complications for diabetes patients. "B" noted that he assumed that "B" themselves would perform the eye and foot examinations during consultations, but regardless of whether prior examinations were present, "B" would like to have them included in the HTML report.
 \\
 A list of other chronic illnesses and prescribed medications is probably quite self-explanatory; however, they would help in assisting in how to treat the diabetes patient. "C" noted that it would be especially nice if the system itself provided a feature whereby one could type in a medication and the system could give a warning if there was a clash with any other previously prescribed medications. Both "A", "B", and "C" also noted that a list of other chronic illnesses could help give the GP a better overview and maybe find a possible causality for any sudden developments in the temporal data.
 
 \subsection{Putting it all together - A FHIR-based datamodel for the HTML report}
+In the following, I have tried to show how a datamodel diagram using the FHIR standard might look. I do not claim that this is the best possible visualisation; however, I hope that an accompanying in-depth explanation might make up for it.  First and foremost, the diagram can be seen in \autoref{fig:datamodel-diagram}.
+\\
+Seeing as the HTML report would be created for a specific patient for consultation, it made sense in my mind to make a patient-centric diagram (which, from my admittedly limited insight, pairs well with the way FHIR was constructed).
+\\
+I have used quite a lot of shorthand notation. The \emph{resources} (\texttt{DomainResource}s) as described in \autoref{sec:theory} are indicated by a white rectangle with a thick, blue\footnote{Apologies to the colourblind} border. The filled out rectangles are also all \emph{resources}; however, as indicated by them all being preceded with "\texttt{List} of:", these are \texttt{List} \emph{ressources}~\cite{FHIR-List-resource} where their \texttt{List.entry.item} elements are all of the type indicated on the immediately next line. To my knowledge, the \texttt{List} \emph{resource} works very similarly to how a coder might think of an \texttt{array}. The ingenious part being that the \texttt{List.entry} element has cardinality $0..^\ast$, which means it can in principle contain indefinite elementsThese "\texttt{List} of"s have been used for:
+\begin{itemize}
+    \item The questionnaire instruments as indicated by the \texttt{Questionnaire} \emph{resource}~\cite{FHIR-Questionnaire-resource}. With examples being HADS and PSQI.
+    \item The questionnaire responses as indicated by the \texttt{QuestionnaireResponse} \emph{resource}~\cite{FHIR-QuestionnaireResponse-resource}.
+    \\
+    Where each \texttt{QuestionnaireResponse} is linked to a specific \texttt{Questionnaire},
+    \\
+    through the \texttt{QuestionnaireResponse.questionnaire} element.
+    \\
+    Also with examples being HADS and PSQI.
+    \item The questionnaire scores as indicated by the \texttt{Observation} \emph{resource}~\cite{FHIR-Observation-resource}. Which is a \texttt{List} of \texttt{Observation}s, each linked to a specific \texttt{QuestionnaireResponse} through the \texttt{Observation.derivedFrom} element. With examples being B2 score: X, WHO-5 score: Y, etc.
+    \item The chronic illnesses as indicated by the \texttt{Condition} \emph{resource}~\cite{FHIR-Condition-resource}. Examples being Type 2 diabetes and Comorbidities (e.g. Hypertension).
+    \item The prescribed medications as indicated by the \texttt{MedicationRequest} \emph{resource}~\cite{FHIR-MedicationRequest-resource}. Examples being Insulin and Melatonin.
+    \item The taken medications as indicated by the \texttt{MedicationStatement} \emph{resource}~\cite{FHIR-MedicationStatement-resource}. Examples Insulin.
+    \item And finally, the OS-derived data as indicated by the \texttt{Observation} \emph{resource}. Which is linked to the \texttt{Device} (wearable) \emph{resource}~\cite{FHIR-Device-resource} via the \texttt{Observation.derivedFrom} element. Examples being Sleep and glucose.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/analysis/datamodel-diagram.png}
+    \caption{Datamodel diagram for the HTML report using FHIR.}
+    \medskip
+    \small
+    \raggedright
+    Description: A datamodel diagram for the HTML report using FHIR. The diagram is not exhaustive, but it should give a good idea of how the data could be structured using FHIR.
+    \label{fig:datamodel-diagram}
+\end{figure}
+
+\noindent
+As for further shorthand, everything except for the \texttt{Questionnaire} and \texttt{Device} \emph{resources} has a dotted arrow pointing to the \texttt{Patient} \emph{resource}. This dotted arrow is shorthand for the \texttt{.subject} element which all the \texttt{DomainResource}s, with a dotted arrow to \texttt{Patient}, has. This is an indication that these \emph{resources} and the information they convey adhere to this \texttt{Patient} \emph{resource}. The normal arrows indicate a relation other than the \texttt{.subject} relation and are all labelled with appropriate element names.
+\\
+In addition, there is the stand-alone \texttt{Appointment} \emph{resource}~\cite{FHIR-Appointment-resource} which encapsulates the "Next consultation" information.
+\\
+Last but not least, the completely dark rectangle called "Examination results", which isn't an example of a "\texttt{List} of:", can be handled in two different ways. The first way is to use the \texttt{DiagnosticReport} \emph{resource}~\cite{FHIR-DiagnosticReport-resource}, which is a report of findings and interpretations. The second way is to use a \texttt{List} of \texttt{Observation}s, where each \texttt{Observation} is an individual examination result. Both solutions can be seen in \autoref{fig:examination-results-solutions}. I made this overview because at a glance it might look like a \texttt{List} would be the obvious choice once more. However, if these exams are conducted at regular intervals, it might make more sense to simply group them together as "one observation", rather than an amalgamous \texttt{List}. Then it would all be contained within the \texttt{DiagnosticReport} \emph{resource}, which could link to the individual exam result \texttt{Observations} through the \texttt{DiagnosticReport.result} element.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.70\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/analysis/exam-results-v1.png}
+        \subcaption*{Examination results \texttt{DiagnosticReport} solution.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/analysis/exam-results-v2.png}
+        \subcaption*{Examination results \texttt{List} of: \texttt{Observation} solution.}
+    \end{subfigure}
+    \caption{Examination results solutions.}
+    \label{fig:examination-results-solutions}
+\end{figure}
+
+\noindent
+As a very last remark on the temporal aspect of the data. The \texttt{Observation} \emph{resource} has a \texttt{.effective[x]} element which can be used to indicate the time of the observation. This way, it would be possible to create a temporal overview of the questionnaire scores and OS-derived data. In addition, it also has a \texttt{.hasMember} element which could be used to reference the prior \texttt{Observation} of the same type. This way, it would be possible to create a linked list of observations, which might be a nice relation to store from a programming perspective.
+
